@@ -6,7 +6,7 @@ function Home() {
   let history = useHistory()
 
   return (
-    <div>
+    <div className="container">
       <Search history={history} />
     </div>
   )

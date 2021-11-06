@@ -4,7 +4,7 @@ import { Movies } from './components/Movies'
 import { Search } from './components/Search'
 import React, { useState, useEffect } from 'react'
 import Home from './components/Home'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { MoviesContext } from './context/movies-context'
 
 function App() {
@@ -15,9 +15,11 @@ function App() {
     <Router>
       <MoviesContext.Provider value={{ movies, setMovies, title, setTitle }}>
         <div className="App">
-          <header>
-            <p>Movie Finder</p>
-          </header>
+          <p>
+            <Link to="/" className="header">
+              Movie Finder
+            </Link>
+          </p>
           <Switch>
             <Route exact path="/">
               <Home setMovies={setMovies} title={title} setTitle={setTitle} />

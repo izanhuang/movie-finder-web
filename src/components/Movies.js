@@ -5,7 +5,7 @@ import { Search } from './Search'
 export const Movies = () => {
   const { movies } = useContext(MoviesContext)
   return (
-    <div>
+    <div className="container">
       <Search />
       {movies && movies.map((movie, index) => <p key={index}>{movie.Title}</p>)}
     </div>

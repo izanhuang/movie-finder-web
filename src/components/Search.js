@@ -28,10 +28,13 @@ export const Search = ({ history }) => {
         <input
           type="text"
           name="titleName"
+          id="search-input"
           onChange={(e) => setTitle(e.target.value)}
           value={title}
         />
-        <button type="submit">Search</button>
+        <button id="search-button" type="submit">
+          Search
+        </button>
       </form>
     </div>
   )
