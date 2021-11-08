@@ -1,0 +1,29 @@
+.select-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+}
+
+@media only screen and (max-width: 750px) {
+  .select-wrapper {
+    flex-wrap: wrap;
+  }
+}
+
+.select-spacing {
+  text-align: center;
+  margin: 15px 25px;
+}
+
+.select-button {
+  width: 200px;
+  height: 200px;
+  background-color: #e62d39;
+  color: #fff;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 30px;
+}

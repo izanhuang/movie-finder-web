@@ -1,6 +1,6 @@
 import logo from './logo.svg'
 import './App.css'
-import { Movies } from './components/Movies'
+import { MoviesByTitle } from './components/MoviesByTitle'
 import { Search } from './components/Search'
 import React, { useState, useEffect } from 'react'
 import Home from './components/Home'
@@ -24,8 +24,8 @@ function App() {
             <Route exact path="/">
               <Home setMovies={setMovies} title={title} setTitle={setTitle} />
             </Route>
-            <Route path="/movies">
-              <Movies
+            <Route path="/movies-by-title">
+              <MoviesByTitle
                 movies={movies}
                 title={title}
                 setTitle={setTitle}

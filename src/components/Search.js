@@ -23,19 +23,17 @@ export const Search = ({ history }) => {
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="titleName"
-          id="search-input"
-          onChange={(e) => setTitle(e.target.value)}
-          value={title}
-        />
-        <button id="search-button" type="submit">
-          Search
-        </button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="titleName"
+        id="search-input"
+        onChange={(e) => setTitle(e.target.value)}
+        value={title}
+      />
+      <button id="search-button" type="submit">
+        Search
+      </button>
+    </form>
   )
 }
