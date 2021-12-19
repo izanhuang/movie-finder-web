@@ -1,11 +1,11 @@
 import logo from './logo.svg'
 import './App.css'
-import { MoviesByTitle } from './components/MoviesByTitle'
 import { Search } from './components/Search'
 import React, { useState, useEffect } from 'react'
 import Home from './components/Home'
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { MoviesContext } from './context/movies-context'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -16,16 +16,16 @@ function App() {
       <MoviesContext.Provider value={{ movies, setMovies, title, setTitle }}>
         <div className="App">
           <p>
-            <Link to="/" className="header">
+            <Link to="/search" className="header">
               Movie Finder
             </Link>
           </p>
           <Switch>
-            <Route exact path="/">
+            {/* <Route exact path="/">
               <Home setMovies={setMovies} title={title} setTitle={setTitle} />
-            </Route>
-            <Route path="/movies-by-title">
-              <MoviesByTitle
+            </Route> */}
+            <Route path="/search">
+              <Search
                 movies={movies}
                 title={title}
                 setTitle={setTitle}

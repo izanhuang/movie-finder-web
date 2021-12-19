@@ -11,16 +11,21 @@ function Home() {
       <div className="select-spacing">
         <button
           className="select-button"
-          onClick={() => history.push('/movies-by-title')}
+          onClick={() => history.push('/search')}
         >
-          Title
+          Search
         </button>
-        <p>Search by title</p>
+        <p>Find movies</p>
       </div>
-      <div className="select-spacing">
-        <button className="select-button">Actor</button>
+      {/* <div className="select-spacing">
+        <button
+          className="select-button"
+          onClick={() => history.push('/movies-by-actor')}
+        >
+          Actor
+        </button>
         <p>Search by actor</p>
-      </div>
+      </div> */}
       <div className="select-spacing">
         <button className="select-button">Pick for Me</button>
         <p>Pick a movie for me</p>
