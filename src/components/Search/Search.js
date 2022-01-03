@@ -1,12 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import { MoviesContext } from '../context/movies-context'
-import '../styles/Search.css'
+import { MoviesContext } from '../../context/movies-context'
+import './Search.css'
+import { useHistory } from 'react-router-dom'
 
-export const Search = ({ history }) => {
+export const Search = () => {
   const { movies, setMovies, title, setTitle } = useContext(MoviesContext)
-  const [type, setType] = useState('')
+  const [type, setType] = useState('movie')
+
+  let history = useHistory()
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -19,14 +22,14 @@ export const Search = ({ history }) => {
         setMovies(movies)
       })
       // .then(() => {
-      //   history.push('/movies')
+      //   history.push('/search')
       // })
       .catch((error) => console.log(error))
   }
 
   return (
     <div className="container">
-      <form onSubmit={handleSubmit}>
+      <form id="search-form" onSubmit={handleSubmit}>
         <select
           name="filter"
           id="filter"
@@ -46,10 +49,16 @@ export const Search = ({ history }) => {
           Search
         </button>
       </form>
-      <div className="container row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+      <div className="container row row-cols-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">
         {movies &&
           movies.map((movie, index) => (
-            <div key={index} className="col movie-card">
+            <div
+              key={index}
+              className="col movie-card"
+              onClick={() => {
+                history.push(`/fullPlot/${type}/${movie.Title}`)
+              }}
+            >
               <div className="card">
                 <img
                   alt={movie.Title}
@@ -57,8 +66,8 @@ export const Search = ({ history }) => {
                   src={movie.Poster}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">{movie.Title}</h5>
-                  <p className="card-text">{movie.Year}</p>
+                  <p className="card-title lead">{movie.Title}</p>
+                  <small className="card-text text-muted">{movie.Year}</small>
                 </div>
               </div>
             </div>
