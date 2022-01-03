@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom'
 
 export const Search = () => {
   const { movies, setMovies, title, setTitle } = useContext(MoviesContext)
-  const [type, setType] = useState('movie')
+  const [type, setType] = useState('')
 
   let history = useHistory()
 
@@ -33,7 +33,9 @@ export const Search = () => {
         <select
           name="filter"
           id="filter"
-          onChange={(e) => setType(e.target.value)}
+          onChange={(e) => {
+            setType(e.target.value)
+          }}
         >
           <option value="movie">Movies</option>
           <option value="series">Series</option>
@@ -56,7 +58,7 @@ export const Search = () => {
               key={index}
               className="col movie-card"
               onClick={() => {
-                history.push(`/fullPlot/${type}/${movie.Title}`)
+                history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
               }}
             >
               <div className="card">

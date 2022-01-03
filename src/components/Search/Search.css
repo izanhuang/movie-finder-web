@@ -74,6 +74,6 @@ input:-webkit-autofill {
   background-color: white !important;
 }
 
-.card {
+.movie-card .card {
   cursor: pointer;
 }

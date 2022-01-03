@@ -1,0 +1,90 @@
+.movie-info {
+  font-weight: 400;
+  text-align: left;
+  margin-top: 50px;
+  height: 100vh;
+}
+
+.movie-div {
+  font-weight: 600;
+  /* color: #e62d39; */
+}
+
+.flex-start {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+.flex-start-left {
+  width: 30%;
+  text-align: center;
+}
+
+.flex-start-left img {
+  width: 330px;
+}
+
+.flex-start-right {
+  width: 70%;
+  /* margin-left: 5%; */
+}
+
+@media only screen and (max-width: 1400px) {
+  .flex-start-left {
+    width: 50%;
+  }
+
+  .flex-start-right {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .flex-start-left {
+    width: auto;
+    text-align: left;
+    padding-bottom: 16px;
+  }
+
+  .flex-start-right {
+    width: auto;
+  }
+}
+
+.fixed-row {
+  display: flex;
+}
+
+.flex-start-right p {
+  word-wrap: break-word;
+  max-width: 800px;
+}
+
+.dot {
+  margin: 8px 12px 0 12px;
+  height: 9px;
+  width: 9px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.imdb span {
+  margin: 0 12px;
+}
+
+.additional-details {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+
+.additional-details .card {
+  width: auto;
+  max-width: 450px;
+}
