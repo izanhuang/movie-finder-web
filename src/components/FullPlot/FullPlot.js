@@ -16,7 +16,6 @@ export const FullPlot = () => {
       .then((res) => {
         const fullPlot = res.data
         setFullPlot(fullPlot)
-        console.log(fullPlot.Ratings.length)
       })
 
       .catch((error) => console.log(error))

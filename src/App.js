@@ -26,7 +26,14 @@ function App() {
           <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
             <Container>
               <Navbar.Brand>
-                <Link to="/" className="header">
+                <Link
+                  to="/"
+                  onClick={() => {
+                    setMovies([])
+                    setTitle('')
+                  }}
+                  className="header"
+                >
                   Movie Finder
                 </Link>
               </Navbar.Brand>
