@@ -5,9 +5,17 @@ import { MoviesContext } from '../../context/movies-context'
 import './Search.css'
 import { useHistory } from 'react-router-dom'
 import Pagination from 'react-bootstrap/Pagination'
+import { AiOutlineStar, AiFillStar, AiOutlinePlusCircle } from 'react-icons/ai'
 
 export const Search = () => {
-  const { movies, setMovies, title, setTitle } = useContext(MoviesContext)
+  const {
+    movies,
+    setMovies,
+    title,
+    setTitle,
+    favorites,
+    setFavorites,
+  } = useContext(MoviesContext)
   const [type, setType] = useState('')
   const [page, setPage] = useState(1)
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
@@ -16,8 +24,9 @@ export const Search = () => {
 
   function handleSubmit(e) {
     e.preventDefault()
-    const firstPage = 1
-    setPage(firstPage)
+    // const firstPage = 1
+    setPage(1)
+    retrieveMovies()
   }
 
   const retrieveMovies = async () => {
@@ -64,23 +73,9 @@ export const Search = () => {
       .catch(() => setNextPageDisabled(true))
   }, [page])
 
-  // useEffect(() => {
-  //   axios
-  //     .get(
-  //       `https://www.omdbapi.com/?s=${title}&type=${type}&page=${
-  //         page + 2
-  //       }&apikey=6fe3dbba`,
-  //     )
-  //     .then((res) => {
-  //       const movies = res.data.Search
-  //       console.log('Checking page', page)
-  //       if (movies === undefined) {
-  //         setNextPageDisabled(true)
-  //       } else {
-  //         setNextPageDisabled(false)
-  //       }
-  //     })
-  // }, [movies, page])
+  useEffect(() => {
+    console.log('favorites', favorites)
+  }, [favorites])
 
   return (
     <div className="container">
@@ -107,23 +102,56 @@ export const Search = () => {
         </button>
       </form>
 
-      <div className="container row row-cols-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">
+      <div className="movies-container container row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">
         {movies &&
           movies.map((movie, index) => (
-            <div
-              key={index}
-              className="col movie-card"
-              onClick={() => {
-                history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
-              }}
-            >
+            <div key={index} className="col movie-card">
               <div className="card">
+                <AiOutlinePlusCircle className="add-to-list card-icons" />
+                <div>
+                  <AiOutlineStar
+                    className="star card-icons"
+                    style={{
+                      display: movie.starred ? 'none' : 'block',
+                    }}
+                    onClick={() => {
+                      movie.starred = true
+                      if (!favorites.includes(movie)) {
+                        const addedToFavorites = [...favorites, movie]
+                        setFavorites(addedToFavorites)
+                      }
+                    }}
+                  />
+
+                  <AiFillStar
+                    className="star card-icons gold-fill"
+                    style={{
+                      display: movie.starred ? 'block' : 'none',
+                    }}
+                    onClick={() => {
+                      movie.starred = false
+                      const deletedFromFavorites = favorites.filter(
+                        (favorite) => favorite.starred === true,
+                      )
+                      setFavorites(deletedFromFavorites)
+                    }}
+                  />
+                </div>
+
                 <img
                   alt={movie.Title}
                   className="card-img-top"
                   src={movie.Poster}
+                  onClick={() => {
+                    history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
+                  }}
                 />
-                <div className="card-body">
+                <div
+                  className="card-body"
+                  onClick={() => {
+                    history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
+                  }}
+                >
                   <p className="card-title lead">{movie.Title}</p>
                   <small className="card-text text-muted">{movie.Year}</small>
                 </div>
@@ -131,7 +159,7 @@ export const Search = () => {
             </div>
           ))}
         {movies && movies.length > 0 ? (
-          <Pagination>
+          <Pagination className="pagination">
             <Pagination.Item
               disabled={page === 1 ? true : false}
               onClick={handlePrevPage}

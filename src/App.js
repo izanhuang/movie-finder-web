@@ -14,14 +14,19 @@ import {
   FormControl,
 } from 'react-bootstrap'
 import { FullPlot } from './components/FullPlot/FullPlot'
+import { Favorites } from './components/Favorites/Favorites'
+import { Login } from './components/Login/Login'
 
 function App() {
   const [movies, setMovies] = useState([])
   const [title, setTitle] = useState('')
+  const [favorites, setFavorites] = useState([])
 
   return (
     <Router>
-      <MoviesContext.Provider value={{ movies, setMovies, title, setTitle }}>
+      <MoviesContext.Provider
+        value={{ movies, setMovies, title, setTitle, favorites, setFavorites }}
+      >
         <div className="App">
           <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
             <Container>
@@ -60,10 +65,18 @@ function App() {
                 title={title}
                 setTitle={setTitle}
                 setMovies={setMovies}
+                favorites={favorites}
+                setFavorites={setFavorites}
               />
             </Route>
             <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">
               <FullPlot />
+            </Route>
+            <Route exact path="favorites">
+              <Favorites favorites={favorites} setFavorites={setFavorites} />
+            </Route>
+            <Route exact path="/login">
+              <Login />
             </Route>
           </Switch>
         </div>

@@ -12,7 +12,7 @@
 
 .row {
   margin-top: 5% !important;
-  margin-bottom: 5% !important;
+  margin-bottom: 20% !important;
   margin-left: 0 !important;
 }
 
@@ -76,4 +76,33 @@ input:-webkit-autofill {
 
 .movie-card .card {
   cursor: pointer;
+  position: relative;
+}
+
+.card-icons {
+  position: absolute;
+  font-size: 1.8em;
+  bottom: 10px;
+  fill: #353a3d;
+}
+
+.gold-fill {
+  fill: gold;
+}
+.add-to-list {
+  left: 10px;
+}
+
+.star {
+  right: 10px;
+}
+
+.movies-container {
+  position: relative;
+}
+
+.pagination {
+  position: absolute;
+  bottom: -100px;
+  right: -50px;
 }
