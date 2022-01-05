@@ -72,7 +72,7 @@ function App() {
             <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">
               <FullPlot />
             </Route>
-            <Route exact path="favorites">
+            <Route exact path="/favorites">
               <Favorites favorites={favorites} setFavorites={setFavorites} />
             </Route>
             <Route exact path="/login">

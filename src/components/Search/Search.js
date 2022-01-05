@@ -38,7 +38,7 @@ export const Search = () => {
         .then((res) => {
           const movies = res.data.Search
           setMovies(movies)
-          console.log('Page ' + page + movies)
+          // console.log('Page ' + page + movies)
         })
     } catch (error) {
       console.log(error)
@@ -57,7 +57,7 @@ export const Search = () => {
 
   useEffect(() => {
     retrieveMovies()
-    console.log('effect')
+    // console.log('effect')
     const checkNextPage = page + 1
     axios
       .get(
@@ -65,7 +65,7 @@ export const Search = () => {
       )
       .then((res) => {
         const movies = res.data.Search
-        console.log('Checking page', page)
+        // console.log('Checking page', page)
         if (movies !== undefined) {
           setNextPageDisabled(false)
         }
@@ -107,16 +107,29 @@ export const Search = () => {
           movies.map((movie, index) => (
             <div key={index} className="col movie-card">
               <div className="card">
-                <AiOutlinePlusCircle className="add-to-list card-icons" />
+                <AiOutlinePlusCircle className="search-add-to-list card-icons" />
                 <div>
                   <AiOutlineStar
-                    className="star card-icons"
+                    className="search-star card-icons"
                     style={{
-                      display: movie.starred ? 'none' : 'block',
+                      display: favorites.some(
+                        (fav) =>
+                          fav.Poster === movie.Poster &&
+                          fav.Title === movie.Title &&
+                          fav.Year === movie.Year,
+                      )
+                        ? 'none'
+                        : 'block',
                     }}
                     onClick={() => {
-                      movie.starred = true
-                      if (!favorites.includes(movie)) {
+                      if (
+                        !favorites.some(
+                          (fav) =>
+                            fav.Poster === movie.Poster &&
+                            fav.Title === movie.Title &&
+                            fav.Year === movie.Year,
+                        )
+                      ) {
                         const addedToFavorites = [...favorites, movie]
                         setFavorites(addedToFavorites)
                       }
@@ -126,12 +139,18 @@ export const Search = () => {
                   <AiFillStar
                     className="star card-icons gold-fill"
                     style={{
-                      display: movie.starred ? 'block' : 'none',
+                      display: favorites.some(
+                        (fav) =>
+                          fav.Poster === movie.Poster &&
+                          fav.Title === movie.Title &&
+                          fav.Year === movie.Year,
+                      )
+                        ? 'block'
+                        : 'none',
                     }}
                     onClick={() => {
-                      movie.starred = false
                       const deletedFromFavorites = favorites.filter(
-                        (favorite) => favorite.starred === true,
+                        (fav) => fav.imdbID !== movie.imdbID,
                       )
                       setFavorites(deletedFromFavorites)
                     }}

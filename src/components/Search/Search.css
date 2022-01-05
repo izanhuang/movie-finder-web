@@ -89,11 +89,12 @@ input:-webkit-autofill {
 .gold-fill {
   fill: gold;
 }
-.add-to-list {
+
+.search-add-to-list {
   left: 10px;
 }
 
-.star {
+.search-star {
   right: 10px;
 }
 

@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min'
 import axios from 'axios'
 import './FullPlot.css'
 import Card from 'react-bootstrap/Card'
+import { AiOutlineStar, AiFillStar, AiOutlinePlusCircle } from 'react-icons/ai'
+import { MoviesContext } from '../../context/movies-context'
 
 export const FullPlot = () => {
   const { fullPlotType, fullPlotTitle } = useParams()
   const [fullPlot, setFullPlot] = useState('')
+  const { favorites, setFavorites } = useContext(MoviesContext)
 
   useEffect(() => {
     axios
@@ -23,7 +26,58 @@ export const FullPlot = () => {
 
   return (
     <div className="container movie-info">
-      <h1>{fullPlotTitle}</h1>
+      <div className="info-header">
+        <h1>{fullPlotTitle}</h1>
+        <AiOutlinePlusCircle className="info-add-to-list info-card-icons" />
+        <div>
+          <AiOutlineStar
+            className="info-star info-card-icons"
+            style={{
+              display: favorites.some(
+                (fav) =>
+                  fav.Poster === fullPlot.Poster &&
+                  fav.Title === fullPlot.Title &&
+                  fav.Year === fullPlot.Year,
+              )
+                ? 'none'
+                : 'block',
+            }}
+            onClick={() => {
+              if (
+                !favorites.some(
+                  (fav) =>
+                    fav.Poster === fullPlot.Poster &&
+                    fav.Title === fullPlot.Title &&
+                    fav.Year === fullPlot.Year,
+                )
+              ) {
+                const addedToFavorites = [...favorites, fullPlot]
+                setFavorites(addedToFavorites)
+              }
+            }}
+          />
+
+          <AiFillStar
+            className="info-star info-card-icons gold-fill"
+            style={{
+              display: favorites.some(
+                (fav) =>
+                  fav.Poster === fullPlot.Poster &&
+                  fav.Title === fullPlot.Title &&
+                  fav.Year === fullPlot.Year,
+              )
+                ? 'block'
+                : 'none',
+            }}
+            onClick={() => {
+              const deletedFromFavorites = favorites.filter(
+                (fav) => fav.imdbID !== fullPlot.imdbID,
+              )
+              setFavorites(deletedFromFavorites)
+            }}
+          />
+        </div>
+      </div>
       <div>
         <div className="fixed-row text-muted">
           <div>{fullPlot.Year}</div>
