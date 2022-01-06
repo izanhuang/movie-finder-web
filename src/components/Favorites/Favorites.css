@@ -1,5 +1,6 @@
 .favorites-container {
-  margin-top: 5%;
+  margin-top: 2.5%;
+  margin-bottom: 10%;
 }
 
 .favorites-mapping-container {
@@ -12,7 +13,7 @@
 .favorite-card {
   max-height: 150px;
   flex-direction: row !important;
-  width: auto;
+  width: auto !important;
   max-width: 300px;
   cursor: pointer;
 }
@@ -39,3 +40,29 @@
 .star {
   right: 10px;
 }
+
+.floating-buttons {
+  width: 100%;
+  display: inline;
+  overflow: auto;
+  white-space: nowrap;
+  margin: 25px auto 0 auto;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+/* @media only screen and (max-width: 766px) {
+} */
+
+/* @media (min-width: 576px) {
+  .container {
+    max-width: auto;
+    width: auto;
+  }
+} */
