@@ -5,11 +5,24 @@ import './FullPlot.css'
 import Card from 'react-bootstrap/Card'
 import { AiOutlineStar, AiFillStar, AiOutlinePlusCircle } from 'react-icons/ai'
 import { MoviesContext } from '../../context/movies-context'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 
 export const FullPlot = () => {
   const { fullPlotType, fullPlotTitle } = useParams()
   const [fullPlot, setFullPlot] = useState('')
-  const { favorites, setFavorites } = useContext(MoviesContext)
+  const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
+    MoviesContext,
+  )
+  const [showAddMovieList, setShowAddMovieList] = useState(false)
+
+  const handleAddMovieListClose = () => setShowAddMovieList(false)
+  const handleAddMovieListShow = () => setShowAddMovieList(true)
+
+  const [name, setName] = useState('')
+  const [currentMovie, setCurrentMovie] = useState({})
 
   useEffect(() => {
     axios
@@ -24,11 +37,84 @@ export const FullPlot = () => {
       .catch((error) => console.log(error))
   }, [])
 
+  function createNewMovieListWithNameAndMovie(name, movie) {
+    movieLists[movieLists.length] = { name: name, list: [movie] }
+    setMovieLists([...movieLists])
+    setName('')
+  }
+
+  function addToMovieList(name, movie) {
+    const index = movieLists.findIndex((movielist) => movielist.name === name)
+    movieLists[index].list = [...movieLists[index].list, movie]
+    setMovieLists(movieLists)
+  }
+
+  useEffect(() => {
+    console.log(movieLists)
+  }, [movieLists])
+
   return (
     <div className="container movie-info">
+      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Give your movie list a name.</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              createNewMovieListWithNameAndMovie(name, currentMovie)
+              handleAddMovieListClose()
+            }}
+          >
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="info-header">
         <h1>{fullPlotTitle}</h1>
-        <AiOutlinePlusCircle className="info-add-to-list info-card-icons" />
+        <OverlayTrigger
+          trigger="click"
+          key="bottom-start"
+          placement="bottom-start"
+          rootClose={true}
+          overlay={
+            <Popover id="popover-positioned-bottom-start">
+              <Popover.Header as="h3">Add to movie list</Popover.Header>
+              <Popover.Body className="popover-button">
+                <Button
+                  variant="dark"
+                  className="custom-button"
+                  onClick={() => {
+                    document.body.click()
+                    setCurrentMovie(fullPlot)
+                    handleAddMovieListShow()
+                  }}
+                >
+                  New movie list
+                </Button>
+              </Popover.Body>
+              {movieLists.map((movielist) => (
+                <Popover.Body
+                  onClick={() => {
+                    setName(movielist.name)
+                    addToMovieList(name, fullPlot)
+                  }}
+                >
+                  {movielist.name}
+                </Popover.Body>
+              ))}
+            </Popover>
+          }
+        >
+          <button className="info-add-to-list info-card-icons">
+            <AiOutlinePlusCircle />
+          </button>
+        </OverlayTrigger>
+
         <div>
           <AiOutlineStar
             className="info-star info-card-icons"

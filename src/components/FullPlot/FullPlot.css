@@ -13,9 +13,12 @@
 .info-card-icons {
   position: absolute;
   font-size: 2.4em;
-  top: 0;
   fill: #353a3d;
   cursor: pointer;
+  padding: 0 0 !important;
+  border: 0 !important;
+  background-color: transparent;
+  line-height: normal !important;
 }
 
 .gold-fill {
@@ -24,10 +27,12 @@
 
 .info-add-to-list {
   right: 75px;
+  top: -15px;
 }
 
 .info-star {
   right: 0;
+  top: 0;
 }
 
 .movie-div {

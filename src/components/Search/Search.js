@@ -6,6 +6,10 @@ import './Search.css'
 import { useHistory } from 'react-router-dom'
 import Pagination from 'react-bootstrap/Pagination'
 import { AiOutlineStar, AiFillStar, AiOutlinePlusCircle } from 'react-icons/ai'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 
 export const Search = () => {
   const {
@@ -15,10 +19,19 @@ export const Search = () => {
     setTitle,
     favorites,
     setFavorites,
+    movieLists,
+    setMovieLists,
   } = useContext(MoviesContext)
   const [type, setType] = useState('')
   const [page, setPage] = useState(1)
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
+  const [showAddMovieList, setShowAddMovieList] = useState(false)
+
+  const handleAddMovieListClose = () => setShowAddMovieList(false)
+  const handleAddMovieListShow = () => setShowAddMovieList(true)
+
+  const [name, setName] = useState('')
+  const [currentMovie, setCurrentMovie] = useState({})
 
   let history = useHistory()
 
@@ -77,6 +90,27 @@ export const Search = () => {
     console.log('favorites', favorites)
   }, [favorites])
 
+  function createNewMovieListWithNameAndMovie(name, movie) {
+    movieLists[movieLists.length] = { name: name, list: [movie] }
+    setMovieLists([...movieLists])
+    setName('')
+  }
+
+  function addToMovieList(movielist, movie) {
+    const index = movieLists.findIndex((list) => list === movielist)
+    console.log(movieLists[index], movieLists[index].list)
+    movieLists[index].list = [...movieLists[index].list, movie]
+    setMovieLists(movieLists)
+  }
+
+  useEffect(() => {
+    console.log(movieLists)
+  }, [movieLists])
+
+  useEffect(() => {
+    console.log(name)
+  }, [name])
+
   return (
     <div className="container">
       <form id="search-form" onSubmit={handleSubmit}>
@@ -102,12 +136,70 @@ export const Search = () => {
         </button>
       </form>
 
+      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Give your movie list a name.</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              createNewMovieListWithNameAndMovie(name, currentMovie)
+              handleAddMovieListClose()
+            }}
+          >
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <div className="movies-container container row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">
         {movies &&
           movies.map((movie, index) => (
             <div key={index} className="col movie-card">
               <div className="card">
-                <AiOutlinePlusCircle className="search-add-to-list card-icons" />
+                <OverlayTrigger
+                  trigger="click"
+                  key="bottom-start"
+                  placement="bottom-start"
+                  rootClose={true}
+                  overlay={
+                    <Popover id="popover-positioned-bottom-start">
+                      <Popover.Header as="h3">Add to movie list</Popover.Header>
+                      <Popover.Body className="popover-button">
+                        <Button
+                          variant="dark"
+                          className="custom-button"
+                          onClick={() => {
+                            document.body.click()
+                            setCurrentMovie(movie)
+                            handleAddMovieListShow()
+                          }}
+                        >
+                          New movie list
+                        </Button>
+                      </Popover.Body>
+                      {movieLists.map((movielist) => (
+                        <Popover.Body
+                          onClick={() => {
+                            setName(movielist.name)
+                            addToMovieList(movielist, movie)
+                          }}
+                        >
+                          {movielist.name}
+                        </Popover.Body>
+                      ))}
+                    </Popover>
+                  }
+                >
+                  <button className="search-add-to-list card-icons">
+                    <AiOutlinePlusCircle />
+                  </button>
+                </OverlayTrigger>
+
                 <div>
                   <AiOutlineStar
                     className="search-star card-icons"
@@ -156,7 +248,6 @@ export const Search = () => {
                     }}
                   />
                 </div>
-
                 <img
                   alt={movie.Title}
                   className="card-img-top"
