@@ -52,7 +52,7 @@ function App() {
                     <Link to="/favorites">Favorites</Link>
                   </Nav.Link>
                   <Nav.Link>
-                    <Link to="/account">Login/Register</Link>
+                    <Link to="/login">Login/Register</Link>
                   </Nav.Link>
                 </Nav>
               </Navbar.Collapse>
