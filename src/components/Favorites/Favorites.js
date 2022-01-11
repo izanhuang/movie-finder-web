@@ -11,10 +11,13 @@ import {
   AiOutlineEdit,
   AiOutlineDelete,
   AiOutlineClear,
+  AiOutlineMinusSquare,
 } from 'react-icons/ai'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import Popover from 'react-bootstrap/Popover'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 export const Favorites = () => {
   const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
@@ -22,32 +25,122 @@ export const Favorites = () => {
   )
   const [activeAccordianItems, setActiveAccordianItems] = useState(['0'])
 
+  const [currentMovieListName, setCurrentMovieListName] = useState('')
+
   const [showFavoritesClear, setShowFavoritesClear] = useState(false)
   const handleCloseFavoritesClear = () => setShowFavoritesClear(false)
   const handleShowFavoritesClear = () => setShowFavoritesClear(true)
 
   const [showMovieListsClear, setShowMovieListsClear] = useState(false)
   const handleCloseMovieListsClear = () => setShowMovieListsClear(false)
-  const handleShowMovieListsClear = () => setShowMovieListsClear(true)
+  const handleShowMovieListsClear = (movieListName) => {
+    setShowMovieListsClear(true)
+    setCurrentMovieListName(movieListName)
+  }
 
   const [showMovieListsDelete, setShowMovieListsDelete] = useState(false)
   const handleCloseMovieListsDelete = () => setShowMovieListsDelete(false)
-  const handleShowMovieListsDelete = () => setShowMovieListsDelete(true)
+  const handleShowMovieListsDelete = (movieListName) => {
+    setShowMovieListsDelete(true)
+    setCurrentMovieListName(movieListName)
+  }
+
+  const [name, setName] = useState('')
+  const [currentMovie, setCurrentMovie] = useState({})
+
+  const [showAddMovieList, setShowAddMovieList] = useState(false)
+
+  const handleAddMovieListClose = () => {
+    setShowAddMovieList(false)
+    setName('')
+  }
+  const handleAddMovieListShow = () => {
+    setShowAddMovieList(true)
+    setName('')
+  }
 
   let history = useHistory()
 
   useEffect(() => {
-    console.log(favorites)
+    // console.log(favorites)
   }, [favorites])
 
-  useEffect(() => {}, [setMovieLists])
+  useEffect(() => {
+    // console.log(activeAccordianItems)
+  }, [activeAccordianItems])
+
+  function createNewMovieListWithNameAndMovie(name, movie) {
+    movieLists[movieLists.length] = { name: name, list: [movie] }
+    setMovieLists([...movieLists])
+    setName('')
+  }
+
+  function addToMovieList(movielist, movieParam) {
+    const index = movieLists.findIndex((list) => list == movielist)
+    // console.log(movieLists[index].list, movieParam.imdbID)
+    // console.log(
+    //   !movieLists[index].list.some(
+    //     (movie) => movie.imdbID == movieParam.imdbID,
+    //   ),
+    // )
+    if (
+      !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
+    ) {
+      movieLists[index].list = [...movieLists[index].list, movieParam]
+      setMovieLists([...movieLists])
+    }
+  }
+
+  function removeFromMovieList(movielist, movieParam) {
+    const index = movieLists.findIndex((list) => list == movielist)
+    const newMovieList = movieLists[index].list.filter(
+      (movie) => movie.imdbID !== movieParam.imdbID,
+    )
+    movieLists[index].list = newMovieList
+    setMovieLists([...movieLists])
+  }
 
   useEffect(() => {
-    console.log(activeAccordianItems)
-  }, [activeAccordianItems])
+    console.log(movieLists)
+  }, [movieLists])
+
+  useEffect(() => {
+    // console.log(name)
+  }, [name])
 
   return (
     <div className="container favorites-container">
+      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Give your movie list a name.</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+        </Modal.Body>
+        <Modal.Body
+          className="no-padding-top"
+          style={{
+            display: movieLists.some((movielist) => movielist.name == name)
+              ? 'block'
+              : 'none',
+          }}
+        >
+          This movie list already exists.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="primary"
+            onClick={() => {
+              createNewMovieListWithNameAndMovie(name, currentMovie)
+              handleAddMovieListClose()
+            }}
+            disabled={movieLists.some((movielist) => movielist.name == name)}
+          >
+            Create
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Alert variant="info" className="align-left">
         <Alert.Link href="/login">Create an account</Alert.Link> to save your
         favorites and movie list(s).
@@ -74,14 +167,14 @@ export const Favorites = () => {
             Favorites
           </Accordion.Header>
 
-          {favorites && favorites.length === 0 ? (
+          {favorites && favorites.length == 0 ? (
             <Accordion.Body>
               <Alert variant="light" className="align-left">
                 <Alert.Heading>Hey, nice to see you</Alert.Heading>
                 <hr />
                 <p className="mb-0">
-                  <Alert.Link href="/">Star movies</Alert.Link> to add them to
-                  your favorites!
+                  ⭐ <Alert.Link href="/">Star movies</Alert.Link> to add them
+                  to your favorites!
                 </p>
               </Alert>
             </Accordion.Body>
@@ -98,7 +191,46 @@ export const Favorites = () => {
                         )
                       }}
                     />
-                    <AiOutlinePlusCircle className="add-to-list card-icons" />
+                    <OverlayTrigger
+                      trigger="click"
+                      key="bottom-start"
+                      placement="bottom-start"
+                      rootClose={true}
+                      overlay={
+                        <Popover id="popover-positioned-bottom-start">
+                          <Popover.Header as="h3">
+                            Add to movie list
+                          </Popover.Header>
+                          <Popover.Body className="popover-button">
+                            <Button
+                              variant="dark"
+                              className="custom-button"
+                              onClick={() => {
+                                document.body.click()
+                                setCurrentMovie(favorite)
+                                handleAddMovieListShow()
+                              }}
+                            >
+                              New movie list
+                            </Button>
+                          </Popover.Body>
+                          {movieLists.map((movielist) => (
+                            <Popover.Body
+                              onClick={() => {
+                                setName(movielist.name)
+                                addToMovieList(movielist, favorite)
+                              }}
+                            >
+                              {movielist.name}
+                            </Popover.Body>
+                          ))}
+                        </Popover>
+                      }
+                    >
+                      <button className="add-to-list card-icons">
+                        <AiOutlinePlusCircle />
+                      </button>
+                    </OverlayTrigger>
                     <div>
                       <AiFillStar
                         className="star card-icons gold-fill"
@@ -197,7 +329,7 @@ export const Favorites = () => {
               <Accordion.Body>
                 <Alert variant="light" className="align-left">
                   <p className="mb-0">
-                    <Alert.Link href="/">Add movies</Alert.Link> to this movie
+                    ➕ <Alert.Link href="/">Add movies</Alert.Link> to this
                     list!
                   </p>
                 </Alert>
@@ -214,7 +346,54 @@ export const Favorites = () => {
                         }}
                       />
 
-                      <AiOutlinePlusCircle className="add-to-list card-icons" />
+                      <OverlayTrigger
+                        trigger="click"
+                        key="bottom-start"
+                        placement="bottom-start"
+                        rootClose={true}
+                        overlay={
+                          <Popover id="popover-positioned-bottom-start">
+                            <Popover.Header as="h3">
+                              Add to movie list
+                            </Popover.Header>
+                            <Popover.Body className="popover-button">
+                              <Button
+                                variant="dark"
+                                className="custom-button"
+                                onClick={() => {
+                                  document.body.click()
+                                  setCurrentMovie(movie)
+                                  handleAddMovieListShow()
+                                }}
+                              >
+                                New movie list
+                              </Button>
+                            </Popover.Body>
+                            {movieLists.map((movielist) => (
+                              <Popover.Body
+                                onClick={() => {
+                                  setName(movielist.name)
+                                  addToMovieList(movielist, movie)
+                                }}
+                              >
+                                {movielist.name}
+                              </Popover.Body>
+                            ))}
+                          </Popover>
+                        }
+                      >
+                        <button className="add-to-list card-icons">
+                          <AiOutlinePlusCircle />
+                        </button>
+                      </OverlayTrigger>
+
+                      <AiOutlineMinusSquare
+                        className="card-icons remove-movie"
+                        onClick={() => {
+                          removeFromMovieList(movielist, movie)
+                        }}
+                      />
+
                       <div>
                         <AiOutlineStar
                           className="search-star card-icons"
@@ -279,14 +458,18 @@ export const Favorites = () => {
                     <Button
                       variant="outline-dark"
                       className="float-left custom-button margin-right"
-                      onClick={handleShowMovieListsClear}
+                      onClick={() => {
+                        handleShowMovieListsClear(movielist.name)
+                      }}
                     >
                       <AiOutlineClear /> Clear
                     </Button>
                     <Button
                       variant="link"
                       className="float-left no-styling"
-                      onClick={handleShowMovieListsDelete}
+                      onClick={() => {
+                        handleShowMovieListsDelete(movielist.name)
+                      }}
                     >
                       Delete
                     </Button>
@@ -306,7 +489,7 @@ export const Favorites = () => {
                       <Modal.Title>Clear movie list</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      Are you sure you want to clear {movielist.name}?
+                      Are you sure you want to clear {currentMovieListName}?
                     </Modal.Body>
                     <Modal.Footer>
                       <Button
@@ -318,7 +501,10 @@ export const Favorites = () => {
                       <Button
                         variant="primary"
                         onClick={() => {
-                          movielist.list = []
+                          const index = movieLists.findIndex(
+                            (list) => list.name == currentMovieListName,
+                          )
+                          movieLists[index].list = []
                           setMovieLists([...movieLists])
                           handleCloseMovieListsClear()
                         }}
@@ -336,7 +522,7 @@ export const Favorites = () => {
                       <Modal.Title>Delete movie list</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                      Are you sure you want to delete {movielist.name}?
+                      Are you sure you want to delete {currentMovieListName}?
                     </Modal.Body>
                     <Modal.Footer>
                       <Button
@@ -349,11 +535,9 @@ export const Favorites = () => {
                         variant="primary"
                         onClick={() => {
                           const deletedFromAccordianList = movieLists.filter(
-                            (list) =>
-                              list.name !== movielist.name &&
-                              list.list.imdbID !== movielist.imdbID,
+                            (list) => list.name !== currentMovieListName,
                           )
-                          setMovieLists(deletedFromAccordianList)
+                          setMovieLists([...deletedFromAccordianList])
                           handleCloseMovieListsDelete()
                         }}
                       >

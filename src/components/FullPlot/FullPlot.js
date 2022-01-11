@@ -43,10 +43,14 @@ export const FullPlot = () => {
     setName('')
   }
 
-  function addToMovieList(name, movie) {
-    const index = movieLists.findIndex((movielist) => movielist.name === name)
-    movieLists[index].list = [...movieLists[index].list, movie]
-    setMovieLists(movieLists)
+  function addToMovieList(movielist, fullPlot) {
+    const index = movieLists.findIndex((list) => list == movielist)
+    if (
+      !movieLists[index].list.some((movie) => movie.imdbID == fullPlot.imdbID)
+    ) {
+      movieLists[index].list = [...movieLists[index].list, fullPlot]
+      setMovieLists([...movieLists])
+    }
   }
 
   useEffect(() => {
@@ -62,6 +66,16 @@ export const FullPlot = () => {
         <Modal.Body>
           <input value={name} onChange={(e) => setName(e.target.value)}></input>
         </Modal.Body>
+        <Modal.Body
+          className="no-padding-top"
+          style={{
+            display: movieLists.some((movielist) => movielist.name == name)
+              ? 'block'
+              : 'none',
+          }}
+        >
+          This movie list already exists.
+        </Modal.Body>
         <Modal.Footer>
           <Button
             variant="primary"
@@ -69,6 +83,7 @@ export const FullPlot = () => {
               createNewMovieListWithNameAndMovie(name, currentMovie)
               handleAddMovieListClose()
             }}
+            disabled={movieLists.some((movielist) => movielist.name == name)}
           >
             Create
           </Button>
@@ -101,7 +116,7 @@ export const FullPlot = () => {
                 <Popover.Body
                   onClick={() => {
                     setName(movielist.name)
-                    addToMovieList(name, fullPlot)
+                    addToMovieList(movielist, fullPlot)
                   }}
                 >
                   {movielist.name}

@@ -47,6 +47,10 @@
   right: 10px;
 }
 
+.remove-movie {
+  left: 145px;
+}
+
 .floating-buttons {
   width: 100%;
   display: inline;

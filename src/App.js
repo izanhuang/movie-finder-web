@@ -123,6 +123,8 @@ function App() {
                 setMovies={setMovies}
                 favorites={favorites}
                 setFavorites={setFavorites}
+                movieLists={movieLists}
+                setMovieLists={setMovieLists}
               />
             </Route>
             <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">

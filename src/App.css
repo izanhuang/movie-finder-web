@@ -48,11 +48,6 @@
   box-shadow: none !important;
 }
 
-.popover-header {
-  /* background-color: #353a3d !important;
-  color: #fff; */
-}
-
 .popover-button {
   margin-top: 1rem !important;
   text-align: center;
@@ -62,10 +57,12 @@
   font-size: 16px;
   cursor: pointer;
   padding: 0 1rem 1rem 1rem !important;
-  /* 0 1rem 0.5rem 1rem */
 }
 
 .popover-body:hover {
-  /* background-color: #c6c6c6; */
   font-weight: 500;
+}
+
+.no-padding-top {
+  padding-top: 0 !important;
 }

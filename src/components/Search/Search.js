@@ -25,13 +25,19 @@ export const Search = () => {
   const [type, setType] = useState('')
   const [page, setPage] = useState(1)
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
-  const [showAddMovieList, setShowAddMovieList] = useState(false)
-
-  const handleAddMovieListClose = () => setShowAddMovieList(false)
-  const handleAddMovieListShow = () => setShowAddMovieList(true)
-
   const [name, setName] = useState('')
   const [currentMovie, setCurrentMovie] = useState({})
+
+  const [showAddMovieList, setShowAddMovieList] = useState(false)
+
+  const handleAddMovieListClose = () => {
+    setShowAddMovieList(false)
+    setName('')
+  }
+  const handleAddMovieListShow = () => {
+    setShowAddMovieList(true)
+    setName('')
+  }
 
   let history = useHistory()
 
@@ -96,11 +102,14 @@ export const Search = () => {
     setName('')
   }
 
-  function addToMovieList(movielist, movie) {
-    const index = movieLists.findIndex((list) => list === movielist)
-    console.log(movieLists[index], movieLists[index].list)
-    movieLists[index].list = [...movieLists[index].list, movie]
-    setMovieLists(movieLists)
+  function addToMovieList(movielist, movieParam) {
+    const index = movieLists.findIndex((list) => list == movielist)
+    if (
+      !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
+    ) {
+      movieLists[index].list = [...movieLists[index].list, movieParam]
+      setMovieLists([...movieLists])
+    }
   }
 
   useEffect(() => {
@@ -143,6 +152,16 @@ export const Search = () => {
         <Modal.Body>
           <input value={name} onChange={(e) => setName(e.target.value)}></input>
         </Modal.Body>
+        <Modal.Body
+          className="no-padding-top"
+          style={{
+            display: movieLists.some((movielist) => movielist.name == name)
+              ? 'block'
+              : 'none',
+          }}
+        >
+          This movie list already exists.
+        </Modal.Body>
         <Modal.Footer>
           <Button
             variant="primary"
@@ -150,6 +169,7 @@ export const Search = () => {
               createNewMovieListWithNameAndMovie(name, currentMovie)
               handleAddMovieListClose()
             }}
+            disabled={movieLists.some((movielist) => movielist.name == name)}
           >
             Create
           </Button>
