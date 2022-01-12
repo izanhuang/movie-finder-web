@@ -72,3 +72,13 @@
   font-weight: 400;
   width: 400px !important;
 }
+
+.not-found-margin-top {
+  margin-top: 15rem;
+}
+
+.display-margin {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}

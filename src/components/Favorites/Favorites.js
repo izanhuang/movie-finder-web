@@ -119,7 +119,7 @@ export const Favorites = () => {
   }
 
   useEffect(() => {
-    console.log(movieLists)
+    // console.log(movieLists)
   }, [movieLists])
 
   useEffect(() => {
@@ -137,6 +137,7 @@ export const Favorites = () => {
 
   return (
     <div className="container favorites-container">
+      <h1 className="display-4 display-margin">Favorites</h1>
       <ToastContainer
         position="bottom-center"
         pauseOnFocusLoss={false}

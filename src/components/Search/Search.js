@@ -82,7 +82,7 @@ export const Search = () => {
     const checkNextPage = page + 1
     axios
       .get(
-        `https://www.omdbapi.com/?s=${title}&type=${type}&page=${checkNextPage}&apikey=6fe3dbba`,
+        `https://www.omdbapi.com/?s=${title}&type=movie&page=${checkNextPage}&apikey=6fe3dbba`,
       )
       .then((res) => {
         const movies = res.data.Search
@@ -95,7 +95,7 @@ export const Search = () => {
   }, [page])
 
   useEffect(() => {
-    console.log('favorites', favorites)
+    // console.log('favorites', favorites)
   }, [favorites])
 
   function createNewMovieListWithNameAndMovie(name, movie) {
@@ -119,11 +119,11 @@ export const Search = () => {
   }
 
   useEffect(() => {
-    console.log(movieLists)
+    // console.log(movieLists)
   }, [movieLists])
 
   useEffect(() => {
-    console.log(name)
+    // console.log(name)
   }, [name])
 
   const notifyAddedMovie = (movieTitle, movieListName) =>
@@ -132,11 +132,18 @@ export const Search = () => {
     toast.success('Created ' + movieListName + ' and added ' + movieTitle)
   const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
     toast.warn('Already exists in ' + movieListName)
+  const notifyNoResults = (movieTitle) =>
+    toast.error(
+      'No results found for ' +
+        movieTitle +
+        '. Enter a different search term and try again.',
+    )
 
   return (
     <div className="container">
+      <h1 className="display-4 display-margin">Search</h1>
       <form id="search-form" onSubmit={handleSubmit}>
-        <select
+        {/* <select
           name="filter"
           id="filter"
           onChange={(e) => {
@@ -145,7 +152,7 @@ export const Search = () => {
         >
           <option value="movie">Movies</option>
           <option value="series">Series</option>
-        </select>
+        </select> */}
         <input
           type="text"
           name="titleName"

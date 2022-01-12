@@ -16,6 +16,7 @@ import {
 import { FullPlot } from './components/FullPlot/FullPlot'
 import { Favorites } from './components/Favorites/Favorites'
 import { Login } from './components/Login/Login'
+import { NotFound } from './components/NotFound/NotFound'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -140,6 +141,9 @@ function App() {
             </Route>
             <Route exact path="/login">
               <Login />
+            </Route>
+            <Route>
+              <NotFound />
             </Route>
           </Switch>
         </div>

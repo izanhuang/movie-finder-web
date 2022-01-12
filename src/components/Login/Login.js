@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button'
 
 export const Login = () => {
   return (
-    <div>
-      Login/Register
+    <div className="container">
+      <h1 className="display-4 display-margin">Login/Register</h1>
       <Form>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
