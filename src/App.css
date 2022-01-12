@@ -66,3 +66,8 @@
 .no-padding-top {
   padding-top: 0 !important;
 }
+
+.toast-margin-top {
+  margin-top: 5%;
+  margin-right: 1%;
+}

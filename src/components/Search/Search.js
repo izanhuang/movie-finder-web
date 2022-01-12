@@ -10,6 +10,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import Toast from 'react-bootstrap/Toast'
+import ToastContainer from 'react-bootstrap/ToastContainer'
 
 export const Search = () => {
   const {
@@ -144,7 +146,22 @@ export const Search = () => {
           Search
         </button>
       </form>
-
+      <ToastContainer position="top-end" className="toast-margin-top">
+        <Toast>
+          <Toast.Body>
+            <strong className="me-auto">
+              Added movie.Title to movielist.name
+            </strong>
+          </Toast.Body>
+        </Toast>
+        <Toast>
+          <Toast.Body>
+            <strong className="me-auto">
+              Created movielist and added movie.Title
+            </strong>
+          </Toast.Body>
+        </Toast>
+      </ToastContainer>
       <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
         <Modal.Header closeButton>
           <Modal.Title>Give your movie list a name.</Modal.Title>

@@ -59,6 +59,19 @@ export const Favorites = () => {
     setName('')
   }
 
+  const [showEditMovieLists, setShowEditMovieLists] = useState(false)
+  const handleCloseEditMovieLists = () => {
+    setShowEditMovieLists(false)
+    setCurrentMovieListName('')
+    setEditCurrentMovieListName('')
+  }
+  const handleShowEditMovieLists = (movieListName) => {
+    setShowEditMovieLists(true)
+    setCurrentMovieListName(movieListName)
+  }
+
+  const [editCurrentMovieListName, setEditCurrentMovieListName] = useState('')
+
   let history = useHistory()
 
   useEffect(() => {
@@ -68,6 +81,10 @@ export const Favorites = () => {
   useEffect(() => {
     // console.log(activeAccordianItems)
   }, [activeAccordianItems])
+
+  useEffect(() => {
+    console.log(currentMovieListName)
+  }, [currentMovieListName])
 
   function createNewMovieListWithNameAndMovie(name, movie) {
     movieLists[movieLists.length] = { name: name, list: [movie] }
@@ -173,7 +190,7 @@ export const Favorites = () => {
                 <Alert.Heading>Hey, nice to see you</Alert.Heading>
                 <hr />
                 <p className="mb-0">
-                  ⭐ <Alert.Link href="/">Star movies</Alert.Link> to add them
+                  ⭐ <Alert.Link href="/">Star</Alert.Link> movies to add them
                   to your favorites!
                 </p>
               </Alert>
@@ -329,7 +346,7 @@ export const Favorites = () => {
               <Accordion.Body>
                 <Alert variant="light" className="align-left">
                   <p className="mb-0">
-                    ➕ <Alert.Link href="/">Add movies</Alert.Link> to this
+                    ➕ <Alert.Link href="/">Add</Alert.Link> movies to this
                     list!
                   </p>
                 </Alert>
@@ -476,6 +493,9 @@ export const Favorites = () => {
                     <Button
                       variant="dark"
                       className="float-right custom-button"
+                      onClick={() => {
+                        handleShowEditMovieLists(movielist.name)
+                      }}
                     >
                       <AiOutlineEdit /> Edit Name
                     </Button>
@@ -542,6 +562,55 @@ export const Favorites = () => {
                         }}
                       >
                         Yes
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+
+                  <Modal
+                    show={showEditMovieLists}
+                    onHide={handleCloseEditMovieLists}
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>Edit movie list name</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <input
+                        value={editCurrentMovieListName}
+                        onChange={(e) =>
+                          setEditCurrentMovieListName(e.target.value)
+                        }
+                      ></input>
+                    </Modal.Body>
+                    <Modal.Body
+                      className="no-padding-top"
+                      style={{
+                        display: movieLists.some(
+                          (movielist) =>
+                            movielist.name == editCurrentMovieListName,
+                        )
+                          ? 'block'
+                          : 'none',
+                      }}
+                    >
+                      This movie list name already exists.
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          const index = movieLists.findIndex(
+                            (list) => list.name == currentMovieListName,
+                          )
+                          movieLists[index].name = editCurrentMovieListName
+                          setMovieLists([...movieLists])
+                          handleCloseEditMovieLists()
+                        }}
+                        disabled={movieLists.some(
+                          (movielist) =>
+                            movielist.name == editCurrentMovieListName,
+                        )}
+                      >
+                        Confirm
                       </Button>
                     </Modal.Footer>
                   </Modal>
