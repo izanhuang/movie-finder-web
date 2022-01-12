@@ -10,8 +10,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
-import Toast from 'react-bootstrap/Toast'
-import ToastContainer from 'react-bootstrap/ToastContainer'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const Search = () => {
   const {
@@ -101,6 +101,7 @@ export const Search = () => {
   function createNewMovieListWithNameAndMovie(name, movie) {
     movieLists[movieLists.length] = { name: name, list: [movie] }
     setMovieLists([...movieLists])
+    notifyCreatedMovieList(movie.Title, name)
     setName('')
   }
 
@@ -111,6 +112,9 @@ export const Search = () => {
     ) {
       movieLists[index].list = [...movieLists[index].list, movieParam]
       setMovieLists([...movieLists])
+      notifyAddedMovie(movieParam.Title, movielist.name)
+    } else {
+      notifyMovieAlreadyExists(movieParam.Title, movielist.name)
     }
   }
 
@@ -121,6 +125,13 @@ export const Search = () => {
   useEffect(() => {
     console.log(name)
   }, [name])
+
+  const notifyAddedMovie = (movieTitle, movieListName) =>
+    toast.success('Added ' + movieTitle)
+  const notifyCreatedMovieList = (movieTitle, movieListName) =>
+    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
+  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
+    toast.warn('Already exists in ' + movieListName)
 
   return (
     <div className="container">
@@ -146,22 +157,15 @@ export const Search = () => {
           Search
         </button>
       </form>
-      <ToastContainer position="top-end" className="toast-margin-top">
-        <Toast>
-          <Toast.Body>
-            <strong className="me-auto">
-              Added movie.Title to movielist.name
-            </strong>
-          </Toast.Body>
-        </Toast>
-        <Toast>
-          <Toast.Body>
-            <strong className="me-auto">
-              Created movielist and added movie.Title
-            </strong>
-          </Toast.Body>
-        </Toast>
-      </ToastContainer>
+
+      <ToastContainer
+        position="bottom-center"
+        pauseOnFocusLoss={false}
+        autoClose={2000}
+        limit={3}
+        className="smaller-font"
+      />
+
       <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
         <Modal.Header closeButton>
           <Modal.Title>Give your movie list a name.</Modal.Title>

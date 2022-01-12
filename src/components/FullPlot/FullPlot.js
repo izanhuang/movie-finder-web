@@ -9,6 +9,8 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const FullPlot = () => {
   const { fullPlotType, fullPlotTitle } = useParams()
@@ -40,6 +42,7 @@ export const FullPlot = () => {
   function createNewMovieListWithNameAndMovie(name, movie) {
     movieLists[movieLists.length] = { name: name, list: [movie] }
     setMovieLists([...movieLists])
+    notifyCreatedMovieList(movie.Title, name)
     setName('')
   }
 
@@ -50,6 +53,9 @@ export const FullPlot = () => {
     ) {
       movieLists[index].list = [...movieLists[index].list, fullPlot]
       setMovieLists([...movieLists])
+      notifyAddedMovie(fullPlot.Title, movielist.name)
+    } else {
+      notifyMovieAlreadyExists(fullPlot.Title, movielist.name)
     }
   }
 
@@ -57,8 +63,23 @@ export const FullPlot = () => {
     console.log(movieLists)
   }, [movieLists])
 
+  const notifyAddedMovie = (movieTitle, movieListName) =>
+    toast.success('Added ' + movieTitle)
+  const notifyCreatedMovieList = (movieTitle, movieListName) =>
+    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
+  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
+    toast.warn('Already exists in ' + movieListName)
+
   return (
     <div className="container movie-info">
+      <ToastContainer
+        position="bottom-center"
+        pauseOnFocusLoss={false}
+        autoClose={2000}
+        limit={3}
+        className="smaller-font"
+      />
+
       <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
         <Modal.Header closeButton>
           <Modal.Title>Give your movie list a name.</Modal.Title>

@@ -18,6 +18,8 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export const Favorites = () => {
   const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
@@ -89,22 +91,20 @@ export const Favorites = () => {
   function createNewMovieListWithNameAndMovie(name, movie) {
     movieLists[movieLists.length] = { name: name, list: [movie] }
     setMovieLists([...movieLists])
+    notifyCreatedMovieList(movie.Title, name)
     setName('')
   }
 
   function addToMovieList(movielist, movieParam) {
     const index = movieLists.findIndex((list) => list == movielist)
-    // console.log(movieLists[index].list, movieParam.imdbID)
-    // console.log(
-    //   !movieLists[index].list.some(
-    //     (movie) => movie.imdbID == movieParam.imdbID,
-    //   ),
-    // )
     if (
       !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
     ) {
       movieLists[index].list = [...movieLists[index].list, movieParam]
       setMovieLists([...movieLists])
+      notifyAddedMovie(movieParam.Title, movielist.name)
+    } else {
+      notifyMovieAlreadyExists(movieParam.Title, movielist.name)
     }
   }
 
@@ -114,6 +114,7 @@ export const Favorites = () => {
       (movie) => movie.imdbID !== movieParam.imdbID,
     )
     movieLists[index].list = newMovieList
+    notifyRemovedMovie(movieParam.Title, movielist.name)
     setMovieLists([...movieLists])
   }
 
@@ -125,8 +126,24 @@ export const Favorites = () => {
     // console.log(name)
   }, [name])
 
+  const notifyAddedMovie = (movieTitle, movieListName) =>
+    toast.success('Added ' + movieTitle)
+  const notifyCreatedMovieList = (movieTitle, movieListName) =>
+    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
+  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
+    toast.warn('Already exists in ' + movieListName)
+  const notifyRemovedMovie = (movieTitle, movieListName) =>
+    toast.success('Removed ' + movieTitle)
+
   return (
     <div className="container favorites-container">
+      <ToastContainer
+        position="bottom-center"
+        pauseOnFocusLoss={false}
+        autoClose={2000}
+        limit={3}
+        className="smaller-font"
+      />
       <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
         <Modal.Header closeButton>
           <Modal.Title>Give your movie list a name.</Modal.Title>
