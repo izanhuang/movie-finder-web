@@ -23,9 +23,13 @@ export const Search = () => {
     setFavorites,
     movieLists,
     setMovieLists,
+    findByTitle,
+    setFindByTitle,
+    setTotalResults,
+    page,
+    setPage,
   } = useContext(MoviesContext)
   const [type, setType] = useState('')
-  const [page, setPage] = useState(1)
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
   const [name, setName] = useState('')
   const [currentMovie, setCurrentMovie] = useState({})
@@ -54,12 +58,16 @@ export const Search = () => {
     try {
       axios
         .get(
-          `https://www.omdbapi.com/?s=${title}&type=${type}&page=${page}&apikey=6fe3dbba`,
+          `https://www.omdbapi.com/?s=${title}&type=movie&page=${page}&apikey=6fe3dbba`,
         )
         .then((res) => {
-          const movies = res.data.Search
-          setMovies(movies)
-          // console.log('Page ' + page + movies)
+          const results = res.data.Search
+          const numOfResults = res.data.totalResults
+          setMovies(results)
+          setTotalResults(numOfResults)
+          if (findByTitle !== title) {
+            setFindByTitle(title)
+          }
         })
     } catch (error) {
       console.log(error)
@@ -77,6 +85,7 @@ export const Search = () => {
   }
 
   useEffect(() => {
+    console.log('Current page: ', page)
     retrieveMovies()
     // console.log('effect')
     const checkNextPage = page + 1
@@ -85,9 +94,9 @@ export const Search = () => {
         `https://www.omdbapi.com/?s=${title}&type=movie&page=${checkNextPage}&apikey=6fe3dbba`,
       )
       .then((res) => {
-        const movies = res.data.Search
+        const results = res.data.Search
         // console.log('Checking page', page)
-        if (movies !== undefined) {
+        if (results !== undefined) {
           setNextPageDisabled(false)
         }
       })
@@ -97,6 +106,10 @@ export const Search = () => {
   useEffect(() => {
     // console.log('favorites', favorites)
   }, [favorites])
+
+  useEffect(() => {
+    console.log('Movies: ', movies)
+  }, [movies])
 
   function createNewMovieListWithNameAndMovie(name, movie) {
     movieLists[movieLists.length] = { name: name, list: [movie] }
@@ -132,12 +145,6 @@ export const Search = () => {
     toast.success('Created ' + movieListName + ' and added ' + movieTitle)
   const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
     toast.warn('Already exists in ' + movieListName)
-  const notifyNoResults = (movieTitle) =>
-    toast.error(
-      'No results found for ' +
-        movieTitle +
-        '. Enter a different search term and try again.',
-    )
 
   return (
     <div className="container">
@@ -299,7 +306,11 @@ export const Search = () => {
                 <img
                   alt={movie.Title}
                   className="card-img-top"
-                  src={movie.Poster}
+                  src={
+                    movie.Poster == 'N/A'
+                      ? 'https://2gyntc2a2i9a22ifya16a222-wpengine.netdna-ssl.com/wp-content/uploads/sites/29/2014/12/Image-Not-Available.jpg'
+                      : movie.Poster
+                  }
                   onClick={() => {
                     history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
                   }}

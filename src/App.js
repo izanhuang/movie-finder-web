@@ -17,6 +17,8 @@ import { FullPlot } from './components/FullPlot/FullPlot'
 import { Favorites } from './components/Favorites/Favorites'
 import { Login } from './components/Login/Login'
 import { NotFound } from './components/NotFound/NotFound'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -69,6 +71,41 @@ function App() {
       ],
     },
   ])
+  const [totalResults, setTotalResults] = useState(0)
+  const [findByTitle, setFindByTitle] = useState('')
+  const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    console.log('RETRIEVED MOVIES', movies, totalResults)
+    console.log('Title: ' + title)
+    console.log('Title length: ' + title.length)
+    console.log('Movies: ' + movies)
+    if (movies) {
+      console.log('Movies length: ' + movies.length)
+    }
+    console.log(totalResults)
+    if (movies && movies.length > 0 && totalResults > 0) {
+      notifyFoundResults(title, totalResults)
+    } else if (
+      title &&
+      title.length > 0 &&
+      movies == undefined &&
+      totalResults == undefined
+    ) {
+      notifyNoResults(title)
+    }
+  }, [findByTitle])
+
+  const notifyNoResults = (movieTitle) =>
+    toast.error(
+      'No results found for ' +
+        movieTitle +
+        '. Enter a different search term and try again.',
+    )
+  const notifyFoundResults = (movieTitle, totalResultsNum) =>
+    toast.success(
+      'Found ' + totalResultsNum + ' results found for ' + movieTitle,
+    )
 
   return (
     <Router>
@@ -82,6 +119,11 @@ function App() {
           setFavorites,
           movieLists,
           setMovieLists,
+          findByTitle,
+          setFindByTitle,
+          setTotalResults,
+          page,
+          setPage,
         }}
       >
         <div className="App">
@@ -118,14 +160,15 @@ function App() {
           <Switch>
             <Route exact path="/">
               <Search
-                movies={movies}
-                title={title}
-                setTitle={setTitle}
-                setMovies={setMovies}
-                favorites={favorites}
-                setFavorites={setFavorites}
-                movieLists={movieLists}
-                setMovieLists={setMovieLists}
+              // movies={movies}
+              // title={title}
+              // setTitle={setTitle}
+              // setMovies={setMovies}
+              // favorites={favorites}
+              // setFavorites={setFavorites}
+              // movieLists={movieLists}
+              // setMovieLists={setMovieLists}
+              // setFindByTitle={setFindByTitle}
               />
             </Route>
             <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">
@@ -133,10 +176,10 @@ function App() {
             </Route>
             <Route exact path="/favorites">
               <Favorites
-                favorites={favorites}
-                setFavorites={setFavorites}
-                movieLists={movieLists}
-                setMovieLists={setMovieLists}
+              // favorites={favorites}
+              // setFavorites={setFavorites}
+              // movieLists={movieLists}
+              // setMovieLists={setMovieLists}
               />
             </Route>
             <Route exact path="/login">

@@ -1,7 +1,7 @@
 .movie-info {
   font-weight: 400;
   text-align: left;
-  margin-top: 50px;
+  margin-top: 70px;
   padding-bottom: 60px;
   height: auto;
 }
@@ -26,13 +26,16 @@
 }
 
 .info-add-to-list {
+  /* right: 75px; */
+  /* top: -15px; */
   right: 75px;
-  top: -15px;
+  top: -65px;
 }
 
 .info-star {
   right: 0;
-  top: 0;
+  /* top: 0; */
+  top: -50px;
 }
 
 .movie-div {
@@ -81,6 +84,13 @@
 
   .flex-start-right {
     width: auto;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .info-add-to-list {
+    left: 0;
+    top: -65px;
   }
 }
 

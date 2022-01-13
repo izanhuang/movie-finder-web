@@ -20,8 +20,14 @@ export const FullPlot = () => {
   )
   const [showAddMovieList, setShowAddMovieList] = useState(false)
 
-  const handleAddMovieListClose = () => setShowAddMovieList(false)
-  const handleAddMovieListShow = () => setShowAddMovieList(true)
+  const handleAddMovieListClose = () => {
+    setShowAddMovieList(false)
+    setName('')
+  }
+  const handleAddMovieListShow = () => {
+    setShowAddMovieList(true)
+    setName('')
+  }
 
   const [name, setName] = useState('')
   const [currentMovie, setCurrentMovie] = useState({})
@@ -211,7 +217,14 @@ export const FullPlot = () => {
 
         <div className="flex-start">
           <div className="flex-start-left">
-            <img className="movie-poster" src={fullPlot.Poster} />
+            <img
+              className="movie-poster"
+              src={
+                fullPlot.Poster == 'N/A'
+                  ? 'https://2gyntc2a2i9a22ifya16a222-wpengine.netdna-ssl.com/wp-content/uploads/sites/29/2014/12/Image-Not-Available.jpg'
+                  : fullPlot.Poster
+              }
+            />
           </div>
 
           <div className="flex-start-right">
