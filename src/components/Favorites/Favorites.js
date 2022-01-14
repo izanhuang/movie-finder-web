@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './Favorites.css'
-import { MoviesContext } from '../../context/movies-context'
+import { MoviesContext } from '../../contexts/movies-context'
 import Card from 'react-bootstrap/Card'
 import Accordion from 'react-bootstrap/Accordion'
 import { useHistory } from 'react-router-dom'

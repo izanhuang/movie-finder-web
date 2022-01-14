@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import { MoviesContext } from '../../context/movies-context'
+import { MoviesContext } from '../../contexts/movies-context'
 import './Search.css'
 import { useHistory } from 'react-router-dom'
 import Pagination from 'react-bootstrap/Pagination'

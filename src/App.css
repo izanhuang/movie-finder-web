@@ -82,3 +82,16 @@
   margin-bottom: 2rem;
   text-align: center;
 }
+
+a {
+  text-decoration: none !important;
+}
+
+.logout-button {
+  font-size: 18px !important;
+  text-decoration: none !important;
+}
+
+.logout-button:hover {
+  text-decoration: underline !important;
+}
