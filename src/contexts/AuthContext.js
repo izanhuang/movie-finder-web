@@ -6,6 +6,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  updateEmail,
 } from 'firebase/auth'
 
 const AuthContext = React.createContext()
@@ -33,6 +35,43 @@ export function AuthProvider({ children }) {
     return signOut(auth)
   }
 
+  function resetPassword(email) {
+    const auth = getAuth()
+    return sendPasswordResetEmail(auth, email)
+  }
+
+  function updateEmail(email) {
+    const auth = getAuth()
+    return updateEmail(auth.currentUser, email)
+    // .then(() => {
+    //   // Email updated!
+    //   // ...
+    //   console.log('Updated email')
+    // })
+    // .catch((error) => {
+    //   console.log(error)
+    //   // An error occurred
+    //   // ...
+    // })
+    // return currentUser.updateEmail(email)
+  }
+
+  function updatePassword(password) {
+    const auth = getAuth()
+    return updateEmail(auth.currentUser, password)
+    // .then(() => {
+    //   // Email updated!
+    //   // ...
+    //   console.log('Updated password')
+    // })
+    // .catch((error) => {
+    //   console.log(error)
+    //   // An error occurred
+    //   // ...
+    // })
+    // return currentUser.updatePassword(password)
+  }
+
   useEffect(() => {
     const auth = getAuth(app)
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -48,6 +87,9 @@ export function AuthProvider({ children }) {
     signup,
     login,
     logout,
+    resetPassword,
+    updateEmail,
+    updatePassword,
   }
 
   return (

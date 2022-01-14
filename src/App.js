@@ -23,6 +23,8 @@ import { AuthProvider } from './contexts/AuthContext'
 import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
+import ForgotPassword from './components/ForgotPassword'
+import UpdateProfile from './components/UpdateProfile'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -188,9 +190,24 @@ function App() {
                   <Login />
                 </Container>
               </Route>
-              <PrivateRoute exact path="/dashboard" component={Dashboard}>
-                {/* <Dashboard /> */}
-              </PrivateRoute>
+              <Route exact path="/forgot-password">
+                <Container
+                  className="d-flex align-items-center justify-content-center text-align"
+                  style={{ minHieght: '100vh' }}
+                >
+                  <ForgotPassword />
+                </Container>
+              </Route>
+              <PrivateRoute
+                exact
+                path="/dashboard"
+                component={Dashboard}
+              ></PrivateRoute>
+              <PrivateRoute
+                exact
+                path="/update-profile"
+                component={UpdateProfile}
+              ></PrivateRoute>
               <Route>
                 <NotFound />
               </Route>

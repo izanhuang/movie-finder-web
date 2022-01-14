@@ -1,64 +1,47 @@
 import React, { useRef, useState } from 'react'
-import './Signup.css'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
 import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
-import { useAuth } from '../../contexts/AuthContext'
+import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 
-export const Signup = () => {
+export default function ForgotPassword() {
   const emailRef = useRef()
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
-  const { signup } = useAuth()
+  const { resetPassword } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState('')
   let history = useHistory()
 
   async function handleSubmit(e) {
     e.preventDefault()
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError('Passwords do not match')
-    }
-
     try {
+      setMessage('')
       setError('')
       setLoading(true)
-      await signup(emailRef.current.value, passwordRef.current.value)
-      history.push('/login')
+      await resetPassword(emailRef.current.value)
+      setMessage('Check your inbox for further instructions')
     } catch (error) {
       console.log(error)
-      setError('Failed to create an account')
+      setError('Failed to reset password')
     }
     setLoading(false)
   }
 
   return (
     <div className="w-100" style={{ maxWidth: '400px' }}>
-      <h1 className="display-4 display-margin">Sign Up</h1>
+      <h1 className="display-4 display-margin">Password Reset</h1>
       <Card>
         <Card.Body>
           {error && <Alert variant="danger">{error}</Alert>}
+          {message && <Alert variant="success">{message}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
-              {/* <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                  </Form.Text> */}
-            </Form.Group>
-
-            <Form.Group className="mb-3" id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
-
-            <Form.Group className="mb-3" id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={passwordConfirmRef} required />
             </Form.Group>
 
             <Button
@@ -67,13 +50,16 @@ export const Signup = () => {
               variant="primary"
               type="submit"
             >
-              Sign Up
+              Reset Password
             </Button>
           </Form>
+          <div className="w-100 text-center mt-3">
+            <Link to="/login">Login</Link>
+          </div>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Already have an account? <Link to="/login">Login</Link>
+        Need an account? <Link to="/signup"> Sign Up</Link>
       </div>
     </div>
   )
