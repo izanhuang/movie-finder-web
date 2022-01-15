@@ -85,7 +85,7 @@ export const Favorites = () => {
   }, [activeAccordianItems])
 
   useEffect(() => {
-    console.log(currentMovieListName)
+    // console.log(currentMovieListName)
   }, [currentMovieListName])
 
   function createNewMovieListWithNameAndMovie(name, movie) {
@@ -597,6 +597,20 @@ export const Favorites = () => {
                         onChange={(e) =>
                           setEditCurrentMovieListName(e.target.value)
                         }
+                        onKeyDown={(e) => {
+                          if (
+                            e.key == 'Enter' &&
+                            editCurrentMovieListName !== ''
+                          ) {
+                            handleShowEditMovieLists(movielist.name)
+                            const index = movieLists.findIndex(
+                              (list) => list.name == currentMovieListName,
+                            )
+                            movieLists[index].name = editCurrentMovieListName
+                            setMovieLists([...movieLists])
+                            handleCloseEditMovieLists()
+                          }
+                        }}
                       ></input>
                     </Modal.Body>
                     <Modal.Body
@@ -616,12 +630,14 @@ export const Favorites = () => {
                       <Button
                         variant="primary"
                         onClick={() => {
-                          const index = movieLists.findIndex(
-                            (list) => list.name == currentMovieListName,
-                          )
-                          movieLists[index].name = editCurrentMovieListName
-                          setMovieLists([...movieLists])
-                          handleCloseEditMovieLists()
+                          if (editCurrentMovieListName !== '') {
+                            const index = movieLists.findIndex(
+                              (list) => list.name == currentMovieListName,
+                            )
+                            movieLists[index].name = editCurrentMovieListName
+                            setMovieLists([...movieLists])
+                            handleCloseEditMovieLists()
+                          }
                         }}
                         disabled={movieLists.some(
                           (movielist) =>

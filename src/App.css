@@ -83,10 +83,6 @@
   text-align: center;
 }
 
-a {
-  text-decoration: none !important;
-}
-
 .logout-button {
   font-size: 18px !important;
   text-decoration: none !important;
@@ -94,4 +90,54 @@ a {
 
 .logout-button:hover {
   text-decoration: underline !important;
+}
+
+.no-underline a {
+  text-decoration: none;
+}
+
+.no-underline a:hover {
+  text-decoration: underline;
+}
+
+.strike {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.strike > span {
+  position: relative;
+  display: inline-block;
+  color: #4a5568;
+}
+
+.strike > span:before,
+.strike > span:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 9999px;
+  height: 1px;
+  background: #cbd5e0;
+}
+
+.strike > span:before {
+  right: 100%;
+  margin-right: 15px;
+}
+
+.strike > span:after {
+  left: 100%;
+  margin-left: 15px;
+}
+
+.google-icon {
+  margin-right: 10px;
+  margin-bottom: 2px;
+}
+
+.muted-link {
+  font-size: 16px;
 }

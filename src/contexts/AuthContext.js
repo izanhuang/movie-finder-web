@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import app, { auth } from '../firebase'
+// import app, { auth } from '../firebase'
 import {
   getAuth,
   onAuthStateChanged,
@@ -8,7 +8,11 @@ import {
   signOut,
   sendPasswordResetEmail,
   updateEmail,
+  updatePassword,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth'
+import { auth } from '../firebase'
 
 const AuthContext = React.createContext()
 
@@ -21,59 +25,35 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   function signup(email, password) {
-    const auth = getAuth()
     return createUserWithEmailAndPassword(auth, email, password)
   }
 
   function login(email, password) {
-    const auth = getAuth()
     return signInWithEmailAndPassword(auth, email, password)
   }
 
   function logout() {
-    const auth = getAuth()
     return signOut(auth)
   }
 
   function resetPassword(email) {
-    const auth = getAuth()
     return sendPasswordResetEmail(auth, email)
   }
 
-  function updateEmail(email) {
-    const auth = getAuth()
-    return updateEmail(auth.currentUser, email)
-    // .then(() => {
-    //   // Email updated!
-    //   // ...
-    //   console.log('Updated email')
-    // })
-    // .catch((error) => {
-    //   console.log(error)
-    //   // An error occurred
-    //   // ...
-    // })
-    // return currentUser.updateEmail(email)
+  function updateUserEmail(emailParam) {
+    return updateEmail(auth.currentUser, emailParam)
   }
 
-  function updatePassword(password) {
-    const auth = getAuth()
-    return updateEmail(auth.currentUser, password)
-    // .then(() => {
-    //   // Email updated!
-    //   // ...
-    //   console.log('Updated password')
-    // })
-    // .catch((error) => {
-    //   console.log(error)
-    //   // An error occurred
-    //   // ...
-    // })
-    // return currentUser.updatePassword(password)
+  function updateUserPassword(password) {
+    return updatePassword(auth.currentUser, password)
+  }
+
+  function signInWithGoogle() {
+    const provider = new GoogleAuthProvider()
+    return signInWithPopup(auth, provider)
   }
 
   useEffect(() => {
-    const auth = getAuth(app)
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user)
       setLoading(false)
@@ -82,14 +62,19 @@ export function AuthProvider({ children }) {
     return unsubscribe
   }, [])
 
+  useEffect(() => {
+    console.log('The user is', currentUser)
+  }, [currentUser])
+
   const value = {
     currentUser,
     signup,
     login,
     logout,
     resetPassword,
-    updateEmail,
-    updatePassword,
+    updateUserEmail,
+    updateUserPassword,
+    signInWithGoogle,
   }
 
   return (

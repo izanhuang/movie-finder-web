@@ -25,6 +25,7 @@ import Dashboard from './components/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './components/ForgotPassword'
 import UpdateProfile from './components/UpdateProfile'
+import MyNavbar from './components/MyNavbar'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -134,36 +135,7 @@ function App() {
       >
         <AuthProvider>
           <div className="App">
-            <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-              <Container>
-                <Navbar.Brand>
-                  <Link
-                    to="/"
-                    onClick={() => {
-                      setMovies([])
-                      setTitle('')
-                    }}
-                    className="header"
-                  >
-                    Movie Finder
-                  </Link>
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                  <Nav className="me-auto">
-                    <Nav.Link>
-                      <Link to="/">Search</Link>
-                    </Nav.Link>
-                    <Nav.Link>
-                      <Link to="/favorites">Favorites</Link>
-                    </Nav.Link>
-                    <Nav.Link>
-                      <Link to="/signup">Sign Up</Link>
-                    </Nav.Link>
-                  </Nav>
-                </Navbar.Collapse>
-              </Container>
-            </Navbar>
+            <MyNavbar />
             <Switch>
               <Route exact path="/">
                 <Search />

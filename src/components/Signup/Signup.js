@@ -7,6 +7,7 @@ import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
 import { useAuth } from '../../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
+import useMounted from '../../hooks/useMounted.js'
 
 export const Signup = () => {
   const emailRef = useRef()
@@ -16,6 +17,8 @@ export const Signup = () => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
+
+  const mounted = useMounted()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -33,7 +36,7 @@ export const Signup = () => {
       console.log(error)
       setError('Failed to create an account')
     }
-    setLoading(false)
+    mounted.current && setLoading(false)
   }
 
   return (
@@ -63,7 +66,7 @@ export const Signup = () => {
 
             <Button
               disabled={loading}
-              className="w-100"
+              className="w-100  mb-2"
               variant="primary"
               type="submit"
             >
@@ -72,7 +75,7 @@ export const Signup = () => {
           </Form>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center mt-2">
+      <div className="w-100 text-center mt-2 no-underline">
         Already have an account? <Link to="/login">Login</Link>
       </div>
     </div>

@@ -175,7 +175,7 @@ export const Search = () => {
       <ToastContainer
         position="bottom-center"
         pauseOnFocusLoss={false}
-        autoClose={2000}
+        autoClose={2500}
         limit={3}
         className="smaller-font"
       />

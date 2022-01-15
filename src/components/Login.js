@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -6,14 +6,18 @@ import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
+import useMounted from '../hooks/useMounted.js'
+import { FaGoogle } from 'react-icons/fa'
 
 export default function Login() {
   const emailRef = useRef()
   const passwordRef = useRef()
-  const { login } = useAuth()
+  const { signInWithGoogle, login } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
+
+  const mounted = useMounted()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -27,7 +31,7 @@ export default function Login() {
       console.log(error)
       setError('Failed to log in')
     }
-    setLoading(false)
+    mounted.current && setLoading(false)
   }
 
   return (
@@ -56,12 +60,29 @@ export default function Login() {
               Log In
             </Button>
           </Form>
-          <div className="w-100 text-center mt-3">
-            <Link to="/forgot-password">Forgot Password?</Link>
+          <div className="w-100  mt-2 no-underline">
+            <Link to="/forgot-password" className="text-muted muted-link">
+              Forgot Password?
+            </Link>
           </div>
+          <div className="w-100 text-center mt-2 strike">
+            <span>OR</span>
+          </div>
+          <Button
+            variant="outline-danger"
+            className="w-100 mt-3 mb-2"
+            onClick={() =>
+              signInWithGoogle()
+                .then(() => history.push('/dashboard'))
+                .catch((e) => console.log(e.message))
+            }
+          >
+            <FaGoogle className="google-icon" />
+            Sign in with Google
+          </Button>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center mt-2">
+      <div className="w-100 text-center mt-2 no-underline">
         Need an account? <Link to="/signup"> Sign Up</Link>
       </div>
     </div>

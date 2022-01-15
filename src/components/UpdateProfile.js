@@ -6,15 +6,18 @@ import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
 import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
+import useMounted from '../hooks/useMounted.js'
 
 export default function UpdateProfile() {
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
-  const { currentUser, updateEmail, updatePassword } = useAuth()
+  const { currentUser, updateUserEmail, updateUserPassword } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
+
+  const mounted = useMounted()
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -27,11 +30,11 @@ export default function UpdateProfile() {
     setError('')
 
     if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current.value))
+      promises.push(updateUserEmail(emailRef.current.value))
     }
 
     if (passwordRef.current.value) {
-      promises.push(updatePassword(passwordRef.current.value))
+      promises.push(updateUserPassword(passwordRef.current.value))
     }
 
     Promise.all(promises)
@@ -42,7 +45,7 @@ export default function UpdateProfile() {
         setError('Failed to update account')
       })
       .finally(() => {
-        setLoading(false)
+        mounted.current && setLoading(false)
       })
     // try {
     //   setError('')
@@ -111,7 +114,7 @@ export default function UpdateProfile() {
             </Form>
           </Card.Body>
         </Card>
-        <div className="w-100 text-center mt-2">
+        <div className="w-100 text-center mt-2 no-underline">
           <Link to="/dashboard">Cancel</Link>
         </div>
       </div>
