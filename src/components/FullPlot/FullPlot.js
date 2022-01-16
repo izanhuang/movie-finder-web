@@ -91,7 +91,17 @@ export const FullPlot = () => {
           <Modal.Title>Give your movie list a name.</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              console.log(e.key)
+              if (e.key == 'Enter' && name !== '') {
+                createNewMovieListWithNameAndMovie(name, currentMovie)
+                handleAddMovieListClose()
+              }
+            }}
+          ></input>
         </Modal.Body>
         <Modal.Body
           className="no-padding-top"

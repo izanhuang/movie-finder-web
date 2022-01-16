@@ -20,8 +20,16 @@ import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useAuth } from '../../contexts/AuthContext'
+import db from '../../firebase'
+import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
+import LoadMovieListDemo from '../../utils/LoadMovieListDemo'
+import LoadUserDocument from '../../utils/LoadUserDocument'
+import { UpdateUserDocument } from '../../utils/UpdateUserDocument'
+import { LogOutAndResetDocument } from '../../utils/LogOutAndResetDocument'
 
 export const Favorites = () => {
+  const { currentUser } = useAuth()
   const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
     MoviesContext,
   )
@@ -119,7 +127,7 @@ export const Favorites = () => {
   }
 
   useEffect(() => {
-    // console.log(movieLists)
+    console.log('useEffect ', movieLists)
   }, [movieLists])
 
   useEffect(() => {
@@ -135,8 +143,43 @@ export const Favorites = () => {
   const notifyRemovedMovie = (movieTitle, movieListName) =>
     toast.success('Removed ' + movieTitle)
 
+  useEffect(() => {
+    console.log(currentUser)
+    if (currentUser && currentUser !== undefined) {
+      console.log(currentUser)
+      LoadUserDocument(currentUser, setFavorites, setMovieLists)
+    }
+  }, [])
+
+  // const handleEdit = async () => {
+  //   if (currentUser) {
+  //     const docRef = doc(db, 'UserMovieLists', currentUser.uid)
+  //     const payload = { favorites, movieLists }
+  //     await setDoc(docRef, payload)
+  //   }
+  // }
+
+  const handleAddDemo = async () => {
+    const docRef = doc(db, 'UserMovieLists', 'Demo')
+    const payload = { favorites, movieLists }
+    await setDoc(docRef, payload)
+    console.log('Added Demo')
+  }
+
+  // const handleLogOutReset = async () => {
+  //   // const docRef = doc(db, 'UserMovieLists', 'Demo')
+  //   // await getDoc(docRef)
+  //   LoadMovieListDemo(setFavorites, setMovieLists)
+  // }
+
   return (
     <div className="container favorites-container">
+      {/* <Button onClick={handleAddDemo}>Set Demo</Button> */}
+      <Button
+        onClick={() => UpdateUserDocument(currentUser, favorites, movieLists)}
+      >
+        Update my list
+      </Button>
       <h1 className="display-4 display-margin">Favorites</h1>
       <ToastContainer
         position="bottom-center"
@@ -150,7 +193,17 @@ export const Favorites = () => {
           <Modal.Title>Give your movie list a name.</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              console.log(e.key)
+              if (e.key == 'Enter' && name !== '') {
+                createNewMovieListWithNameAndMovie(name, currentMovie)
+                handleAddMovieListClose()
+              }
+            }}
+          ></input>
         </Modal.Body>
         <Modal.Body
           className="no-padding-top"
@@ -176,10 +229,12 @@ export const Favorites = () => {
         </Modal.Footer>
       </Modal>
 
-      <Alert variant="info" className="align-left">
-        <Alert.Link href="/login">Create an account</Alert.Link> to save your
-        favorites and movie list(s).
-      </Alert>
+      {currentUser == null && (
+        <Alert variant="info" className="align-left">
+          <Alert.Link href="/login">Create an account</Alert.Link> to save your
+          favorites and movie list(s).
+        </Alert>
+      )}
 
       <Accordion defaultActiveKey={activeAccordianItems} alwaysOpen>
         <Accordion.Item eventKey="0">

@@ -26,71 +26,22 @@ import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './components/ForgotPassword'
 import UpdateProfile from './components/UpdateProfile'
 import MyNavbar from './components/MyNavbar'
+import { MovieListDemo } from './utils/MovieListDemo'
+import { useAuth } from './contexts/AuthContext'
+import db from './firebase'
+import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
+import LoadMovieListDemo from './utils/LoadMovieListDemo'
 
 function App() {
   const [movies, setMovies] = useState([])
   const [title, setTitle] = useState('')
   const [favorites, setFavorites] = useState([])
-  const [movieLists, setMovieLists] = useState([
-    {
-      name: 'Movie List Demo',
-      list: [
-        {
-          Poster:
-            'https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
-          Title: 'The Avengers',
-          Type: 'movie',
-          Year: '2012',
-          imdbID: 'tt0848228',
-        },
-        {
-          Poster:
-            'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_SX300.jpg',
-          Title: 'Avengers: Endgame',
-          Type: 'movie',
-          Year: '2019',
-          imdbID: 'tt4154796',
-        },
-        {
-          Poster:
-            'https://m.media-amazon.com/images/M/MV5BMjMxNjY2MDU1OV5BMl5BanBnXkFtZTgwNzY1MTUwNTM@._V1_SX300.jpg',
-          Title: 'Avengers: Infinity War',
-          Type: 'movie',
-          Year: '2018',
-          imdbID: 'tt4154756',
-        },
-        {
-          Poster:
-            'https://m.media-amazon.com/images/M/MV5BMTM4OGJmNWMtOTM4Ni00NTE3LTg3MDItZmQxYjc4N2JhNmUxXkEyXkFqcGdeQXVyNTgzMDMzMTg@._V1_SX300.jpg',
-          Title: 'Avengers: Age of Ultron',
-          Type: 'movie',
-          Year: '2015',
-          imdbID: 'tt2395427',
-        },
-        {
-          Poster:
-            'https://m.media-amazon.com/images/M/MV5BNjQ3NWNlNmQtMTE5ZS00MDdmLTlkZjUtZTBlM2UxMGFiMTU3XkEyXkFqcGdeQXVyNjUwNzk3NDc@._V1_SX300.jpg',
-          Title: "Harry Potter and the Sorcerer's Stone",
-          Type: 'movie',
-          Year: '2001',
-          imdbID: 'tt0241527',
-        },
-      ],
-    },
-  ])
+  const [movieLists, setMovieLists] = useState([])
   const [totalResults, setTotalResults] = useState(0)
   const [findByTitle, setFindByTitle] = useState('')
   const [page, setPage] = useState(1)
 
   useEffect(() => {
-    console.log('RETRIEVED MOVIES', movies, totalResults)
-    console.log('Title: ' + title)
-    console.log('Title length: ' + title.length)
-    console.log('Movies: ' + movies)
-    if (movies) {
-      console.log('Movies length: ' + movies.length)
-    }
-    console.log(totalResults)
     if (movies && movies.length > 0 && totalResults > 0) {
       notifyFoundResults(title, totalResults)
     } else if (
@@ -113,6 +64,34 @@ function App() {
     toast.success(
       'Found ' + totalResultsNum + ' results found for ' + movieTitle,
     )
+
+  const currentUser = useAuth()
+
+  useEffect(() => {
+    if (currentUser == undefined) {
+      LoadMovieListDemo(setFavorites, setMovieLists)
+    }
+  }, [])
+
+  const handleEdit = async () => {
+    if (currentUser) {
+      const docRef = doc(db, 'UserMovieLists', currentUser.uid)
+      const payload = { favorites, movieLists }
+      await setDoc(docRef, payload)
+    }
+  }
+
+  const handleAddDemo = async () => {
+    const docRef = doc(db, 'UserMovieLists', 'Demo')
+    const payload = { favorites, movieLists }
+    await setDoc(docRef, payload)
+    console.log('Added Demo')
+  }
+
+  const handleLogOutReset = async () => {
+    const docRef = doc(db, 'UserMovieLists', 'Demo')
+    await getDoc(docRef)
+  }
 
   return (
     <Router>

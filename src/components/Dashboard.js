@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
@@ -6,10 +6,13 @@ import { Link, useHistory } from 'react-router-dom'
 import { updateCurrentUser } from 'firebase/auth'
 import { useAuth } from '../contexts/AuthContext'
 import Container from 'react-bootstrap/Container'
+import LoadMovieListDemo from '../utils/LoadMovieListDemo'
+import { MoviesContext } from '../contexts/movies-context'
 
 export default function Dashboard() {
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
+  const { setMovieLists, setFavorites } = useContext(MoviesContext)
   const history = useHistory()
 
   async function handleLogout() {
@@ -43,7 +46,10 @@ export default function Dashboard() {
           <Button
             variant="link"
             className="logout-button"
-            onClick={handleLogout}
+            onClick={() => {
+              LoadMovieListDemo(setFavorites, setMovieLists)
+              handleLogout()
+            }}
           >
             Log Out
           </Button>

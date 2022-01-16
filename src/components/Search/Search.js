@@ -12,8 +12,12 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useAuth } from '../../contexts/AuthContext'
+import LoadUserDocument from '../../utils/LoadUserDocument'
+import { UpdateUserDocument } from '../../utils/UpdateUserDocument'
 
 export const Search = () => {
+  const { currentUser } = useAuth()
   const {
     movies,
     setMovies,
@@ -125,6 +129,7 @@ export const Search = () => {
     ) {
       movieLists[index].list = [...movieLists[index].list, movieParam]
       setMovieLists([...movieLists])
+      UpdateUserDocument(currentUser, favorites, movieLists)
       notifyAddedMovie(movieParam.Title, movielist.name)
     } else {
       notifyMovieAlreadyExists(movieParam.Title, movielist.name)
@@ -145,6 +150,12 @@ export const Search = () => {
     toast.success('Created ' + movieListName + ' and added ' + movieTitle)
   const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
     toast.warn('Already exists in ' + movieListName)
+
+  useEffect(() => {
+    if (currentUser && currentUser !== undefined) {
+      LoadUserDocument(currentUser, setFavorites, setMovieLists)
+    }
+  }, [])
 
   return (
     <div className="container">
@@ -185,7 +196,17 @@ export const Search = () => {
           <Modal.Title>Give your movie list a name.</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <input value={name} onChange={(e) => setName(e.target.value)}></input>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => {
+              console.log(e.key)
+              if (e.key == 'Enter' && name !== '') {
+                createNewMovieListWithNameAndMovie(name, currentMovie)
+                handleAddMovieListClose()
+              }
+            }}
+          ></input>
         </Modal.Body>
         <Modal.Body
           className="no-padding-top"
