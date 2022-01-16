@@ -2,7 +2,7 @@ import React from 'react'
 import db from '../firebase'
 import { onSnapshot, collection } from 'firebase/firestore'
 
-export default function LoadUserDocument(
+export default function loadUserDocument(
   currentUser,
   setFavorites,
   setMovieLists,

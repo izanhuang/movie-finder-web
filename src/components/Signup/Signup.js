@@ -8,12 +8,13 @@ import Container from 'react-bootstrap/Container'
 import { useAuth } from '../../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import useMounted from '../../hooks/useMounted.js'
+import { FaGoogle } from 'react-icons/fa'
 
 export const Signup = () => {
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
-  const { signup } = useAuth()
+  const { signInWithGoogle, signup } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
@@ -73,6 +74,21 @@ export const Signup = () => {
               Sign Up
             </Button>
           </Form>
+          <div className="w-100 text-center mt-2 strike">
+            <span>OR</span>
+          </div>
+          <Button
+            variant="outline-danger"
+            className="w-100 mt-3 mb-2"
+            onClick={() =>
+              signInWithGoogle()
+                .then(() => history.push('/dashboard'))
+                .catch((e) => console.log(e.message))
+            }
+          >
+            <FaGoogle className="google-icon" />
+            Sign in with Google
+          </Button>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2 no-underline">

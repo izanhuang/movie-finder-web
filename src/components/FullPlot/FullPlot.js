@@ -8,16 +8,29 @@ import { MoviesContext } from '../../contexts/movies-context'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
-import Modal from 'react-bootstrap/Modal'
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useAuth } from '../../contexts/AuthContext'
+import {
+  createNewMovieListWithNameAndMovie,
+  addToMovieList,
+} from '../../utils/MovieListsUtils'
+import CustomToastContainer from '../CustomToastContainer'
+import AddMovieModal from '../Modals/AddMovieToMovieListModal'
 
 export const FullPlot = () => {
+  const { currentUser } = useAuth()
   const { fullPlotType, fullPlotTitle } = useParams()
   const [fullPlot, setFullPlot] = useState('')
-  const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
-    MoviesContext,
-  )
+  const {
+    favorites,
+    setFavorites,
+    movieLists,
+    setMovieLists,
+    name,
+    setName,
+    currentMovie,
+    setCurrentMovie,
+  } = useContext(MoviesContext)
   const [showAddMovieList, setShowAddMovieList] = useState(false)
 
   const handleAddMovieListClose = () => {
@@ -28,9 +41,6 @@ export const FullPlot = () => {
     setShowAddMovieList(true)
     setName('')
   }
-
-  const [name, setName] = useState('')
-  const [currentMovie, setCurrentMovie] = useState({})
 
   useEffect(() => {
     axios
@@ -45,87 +55,19 @@ export const FullPlot = () => {
       .catch((error) => console.log(error))
   }, [])
 
-  function createNewMovieListWithNameAndMovie(name, movie) {
-    movieLists[movieLists.length] = { name: name, list: [movie] }
-    setMovieLists([...movieLists])
-    notifyCreatedMovieList(movie.Title, name)
-    setName('')
-  }
-
-  function addToMovieList(movielist, fullPlot) {
-    const index = movieLists.findIndex((list) => list == movielist)
-    if (
-      !movieLists[index].list.some((movie) => movie.imdbID == fullPlot.imdbID)
-    ) {
-      movieLists[index].list = [...movieLists[index].list, fullPlot]
-      setMovieLists([...movieLists])
-      notifyAddedMovie(fullPlot.Title, movielist.name)
-    } else {
-      notifyMovieAlreadyExists(fullPlot.Title, movielist.name)
-    }
-  }
-
   useEffect(() => {
     console.log(movieLists)
   }, [movieLists])
 
-  const notifyAddedMovie = (movieTitle, movieListName) =>
-    toast.success('Added ' + movieTitle)
-  const notifyCreatedMovieList = (movieTitle, movieListName) =>
-    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
-  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
-    toast.warn('Already exists in ' + movieListName)
-
   return (
     <div className="container movie-info">
-      <ToastContainer
-        position="bottom-center"
-        pauseOnFocusLoss={false}
-        autoClose={2000}
-        limit={3}
-        className="smaller-font"
+      <CustomToastContainer autoClose={2000} />
+
+      <AddMovieModal
+        showAddMovieList={showAddMovieList}
+        handleAddMovieListClose={handleAddMovieListClose}
       />
 
-      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Give your movie list a name.</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => {
-              console.log(e.key)
-              if (e.key == 'Enter' && name !== '') {
-                createNewMovieListWithNameAndMovie(name, currentMovie)
-                handleAddMovieListClose()
-              }
-            }}
-          ></input>
-        </Modal.Body>
-        <Modal.Body
-          className="no-padding-top"
-          style={{
-            display: movieLists.some((movielist) => movielist.name == name)
-              ? 'block'
-              : 'none',
-          }}
-        >
-          This movie list already exists.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              createNewMovieListWithNameAndMovie(name, currentMovie)
-              handleAddMovieListClose()
-            }}
-            disabled={movieLists.some((movielist) => movielist.name == name)}
-          >
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
       <div className="info-header">
         <h1>{fullPlotTitle}</h1>
         <OverlayTrigger
@@ -153,7 +95,14 @@ export const FullPlot = () => {
                 <Popover.Body
                   onClick={() => {
                     setName(movielist.name)
-                    addToMovieList(movielist, fullPlot)
+                    addToMovieList(
+                      movielist,
+                      fullPlot,
+                      movieLists,
+                      setMovieLists,
+                      currentUser,
+                      favorites,
+                    )
                   }}
                 >
                   {movielist.name}

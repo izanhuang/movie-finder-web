@@ -2,7 +2,7 @@ import React from 'react'
 import db from '../firebase'
 import { onSnapshot, collection } from 'firebase/firestore'
 
-export default function LoadMovieListDemo(setFavorites, setMovieLists) {
+export default function loadMovieListDemo(setFavorites, setMovieLists) {
   return onSnapshot(collection(db, 'UserMovieLists'), (snapshot) => {
     setFavorites(
       ...snapshot.docs

@@ -10,11 +10,15 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
-import LoadUserDocument from '../../utils/LoadUserDocument'
-import { UpdateUserDocument } from '../../utils/UpdateUserDocument'
+import loadUserDocument from '../../utils/loadUserDocument'
+import {
+  createNewMovieListWithNameAndMovie,
+  addToMovieList,
+} from '../../utils/MovieListsUtils'
+import CustomToastContainer from '../CustomToastContainer'
+import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
 
 export const Search = () => {
   const { currentUser } = useAuth()
@@ -32,11 +36,12 @@ export const Search = () => {
     setTotalResults,
     page,
     setPage,
+    name,
+    setName,
+    setCurrentMovie,
   } = useContext(MoviesContext)
   const [type, setType] = useState('')
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
-  const [name, setName] = useState('')
-  const [currentMovie, setCurrentMovie] = useState({})
 
   const [showAddMovieList, setShowAddMovieList] = useState(false)
 
@@ -115,26 +120,26 @@ export const Search = () => {
     console.log('Movies: ', movies)
   }, [movies])
 
-  function createNewMovieListWithNameAndMovie(name, movie) {
-    movieLists[movieLists.length] = { name: name, list: [movie] }
-    setMovieLists([...movieLists])
-    notifyCreatedMovieList(movie.Title, name)
-    setName('')
-  }
+  // function createNewMovieListWithNameAndMovie(name, movie) {
+  //   movieLists[movieLists.length] = { name: name, list: [movie] }
+  //   setMovieLists([...movieLists])
+  //   notifyCreatedMovieList(movie.Title, name)
+  //   setName('')
+  // }
 
-  function addToMovieList(movielist, movieParam) {
-    const index = movieLists.findIndex((list) => list == movielist)
-    if (
-      !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
-    ) {
-      movieLists[index].list = [...movieLists[index].list, movieParam]
-      setMovieLists([...movieLists])
-      UpdateUserDocument(currentUser, favorites, movieLists)
-      notifyAddedMovie(movieParam.Title, movielist.name)
-    } else {
-      notifyMovieAlreadyExists(movieParam.Title, movielist.name)
-    }
-  }
+  // function addToMovieList(movielist, movieParam) {
+  //   const index = movieLists.findIndex((list) => list == movielist)
+  //   if (
+  //     !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
+  //   ) {
+  //     movieLists[index].list = [...movieLists[index].list, movieParam]
+  //     setMovieLists([...movieLists])
+  //     updateUserDocument(currentUser, favorites, movieLists)
+  //     notifyAddedMovie(movieParam.Title, movielist.name)
+  //   } else {
+  //     notifyMovieAlreadyExists(movieParam.Title, movielist.name)
+  //   }
+  // }
 
   useEffect(() => {
     // console.log(movieLists)
@@ -144,16 +149,9 @@ export const Search = () => {
     // console.log(name)
   }, [name])
 
-  const notifyAddedMovie = (movieTitle, movieListName) =>
-    toast.success('Added ' + movieTitle)
-  const notifyCreatedMovieList = (movieTitle, movieListName) =>
-    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
-  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
-    toast.warn('Already exists in ' + movieListName)
-
   useEffect(() => {
     if (currentUser && currentUser !== undefined) {
-      LoadUserDocument(currentUser, setFavorites, setMovieLists)
+      loadUserDocument(currentUser, setFavorites, setMovieLists)
     }
   }, [])
 
@@ -161,16 +159,6 @@ export const Search = () => {
     <div className="container">
       <h1 className="display-4 display-margin">Search</h1>
       <form id="search-form" onSubmit={handleSubmit}>
-        {/* <select
-          name="filter"
-          id="filter"
-          onChange={(e) => {
-            setType(e.target.value)
-          }}
-        >
-          <option value="movie">Movies</option>
-          <option value="series">Series</option>
-        </select> */}
         <input
           type="text"
           name="titleName"
@@ -183,54 +171,12 @@ export const Search = () => {
         </button>
       </form>
 
-      <ToastContainer
-        position="bottom-center"
-        pauseOnFocusLoss={false}
-        autoClose={2500}
-        limit={3}
-        className="smaller-font"
-      />
+      <CustomToastContainer autoClose={2500} />
 
-      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Give your movie list a name.</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => {
-              console.log(e.key)
-              if (e.key == 'Enter' && name !== '') {
-                createNewMovieListWithNameAndMovie(name, currentMovie)
-                handleAddMovieListClose()
-              }
-            }}
-          ></input>
-        </Modal.Body>
-        <Modal.Body
-          className="no-padding-top"
-          style={{
-            display: movieLists.some((movielist) => movielist.name == name)
-              ? 'block'
-              : 'none',
-          }}
-        >
-          This movie list already exists.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              createNewMovieListWithNameAndMovie(name, currentMovie)
-              handleAddMovieListClose()
-            }}
-            disabled={movieLists.some((movielist) => movielist.name == name)}
-          >
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <AddMovieToMovieListModal
+        showAddMovieList={showAddMovieList}
+        handleAddMovieListClose={handleAddMovieListClose}
+      />
 
       <div className="movies-container container row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">
         {movies &&
@@ -262,7 +208,14 @@ export const Search = () => {
                         <Popover.Body
                           onClick={() => {
                             setName(movielist.name)
-                            addToMovieList(movielist, movie)
+                            addToMovieList(
+                              movielist,
+                              movie,
+                              movieLists,
+                              setMovieLists,
+                              currentUser,
+                              favorites,
+                            )
                           }}
                         >
                           {movielist.name}

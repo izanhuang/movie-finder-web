@@ -18,21 +18,34 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
 import db from '../../firebase'
 import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
-import LoadMovieListDemo from '../../utils/LoadMovieListDemo'
-import LoadUserDocument from '../../utils/LoadUserDocument'
-import { UpdateUserDocument } from '../../utils/UpdateUserDocument'
-import { LogOutAndResetDocument } from '../../utils/LogOutAndResetDocument'
+import loadUserDocument from '../../utils/loadUserDocument'
+import updateUserDocument from '../../utils/updateUserDocument.js'
+import {
+  createNewMovieListWithNameAndMovie,
+  addToMovieList,
+  removeFromMovieList,
+} from '../../utils/MovieListsUtils'
+import CustomToastContainer from '../CustomToastContainer'
+import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
+import ClearMovieListModal from '../Modals/ClearMovieListModal'
+import DeleteMovieListModal from '../Modals/DeleteMovieListModal'
+import EditMovieListNameModal from '../Modals/EditMovieListNameModal'
 
 export const Favorites = () => {
   const { currentUser } = useAuth()
-  const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
-    MoviesContext,
-  )
+  const {
+    favorites,
+    setFavorites,
+    movieLists,
+    setMovieLists,
+    name,
+    setName,
+    setCurrentMovie,
+  } = useContext(MoviesContext)
   const [activeAccordianItems, setActiveAccordianItems] = useState(['0'])
 
   const [currentMovieListName, setCurrentMovieListName] = useState('')
@@ -54,9 +67,6 @@ export const Favorites = () => {
     setShowMovieListsDelete(true)
     setCurrentMovieListName(movieListName)
   }
-
-  const [name, setName] = useState('')
-  const [currentMovie, setCurrentMovie] = useState({})
 
   const [showAddMovieList, setShowAddMovieList] = useState(false)
 
@@ -96,58 +106,29 @@ export const Favorites = () => {
     // console.log(currentMovieListName)
   }, [currentMovieListName])
 
-  function createNewMovieListWithNameAndMovie(name, movie) {
-    movieLists[movieLists.length] = { name: name, list: [movie] }
-    setMovieLists([...movieLists])
-    notifyCreatedMovieList(movie.Title, name)
-    setName('')
-  }
-
-  function addToMovieList(movielist, movieParam) {
-    const index = movieLists.findIndex((list) => list == movielist)
-    if (
-      !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
-    ) {
-      movieLists[index].list = [...movieLists[index].list, movieParam]
-      setMovieLists([...movieLists])
-      notifyAddedMovie(movieParam.Title, movielist.name)
-    } else {
-      notifyMovieAlreadyExists(movieParam.Title, movielist.name)
-    }
-  }
-
-  function removeFromMovieList(movielist, movieParam) {
-    const index = movieLists.findIndex((list) => list == movielist)
-    const newMovieList = movieLists[index].list.filter(
-      (movie) => movie.imdbID !== movieParam.imdbID,
-    )
-    movieLists[index].list = newMovieList
-    notifyRemovedMovie(movieParam.Title, movielist.name)
-    setMovieLists([...movieLists])
-  }
+  // function removeFromMovieList(movielist, movieParam) {
+  //   const index = movieLists.findIndex((list) => list == movielist)
+  //   const newMovieList = movieLists[index].list.filter(
+  //     (movie) => movie.imdbID !== movieParam.imdbID,
+  //   )
+  //   movieLists[index].list = newMovieList
+  //   notifyRemovedMovie(movieParam.Title, movielist.name)
+  //   setMovieLists([...movieLists])
+  // }
 
   useEffect(() => {
-    console.log('useEffect ', movieLists)
+    console.log('useEffect movieLists ', movieLists)
   }, [movieLists])
 
   useEffect(() => {
     // console.log(name)
   }, [name])
 
-  const notifyAddedMovie = (movieTitle, movieListName) =>
-    toast.success('Added ' + movieTitle)
-  const notifyCreatedMovieList = (movieTitle, movieListName) =>
-    toast.success('Created ' + movieListName + ' and added ' + movieTitle)
-  const notifyMovieAlreadyExists = (movieTitle, movieListName) =>
-    toast.warn('Already exists in ' + movieListName)
-  const notifyRemovedMovie = (movieTitle, movieListName) =>
-    toast.success('Removed ' + movieTitle)
-
   useEffect(() => {
     console.log(currentUser)
     if (currentUser && currentUser !== undefined) {
       console.log(currentUser)
-      LoadUserDocument(currentUser, setFavorites, setMovieLists)
+      loadUserDocument(currentUser, setFavorites, setMovieLists)
     }
   }, [])
 
@@ -169,69 +150,29 @@ export const Favorites = () => {
   // const handleLogOutReset = async () => {
   //   // const docRef = doc(db, 'UserMovieLists', 'Demo')
   //   // await getDoc(docRef)
-  //   LoadMovieListDemo(setFavorites, setMovieLists)
+  //   loadMovieListDemo(setFavorites, setMovieLists)
   // }
 
   return (
     <div className="container favorites-container">
       {/* <Button onClick={handleAddDemo}>Set Demo</Button> */}
       <Button
-        onClick={() => UpdateUserDocument(currentUser, favorites, movieLists)}
+        onClick={() => updateUserDocument(currentUser, favorites, movieLists)}
       >
         Update my list
       </Button>
       <h1 className="display-4 display-margin">Favorites</h1>
-      <ToastContainer
-        position="bottom-center"
-        pauseOnFocusLoss={false}
-        autoClose={2000}
-        limit={3}
-        className="smaller-font"
+
+      <CustomToastContainer autoClose={2000} />
+
+      <AddMovieToMovieListModal
+        showAddMovieList={showAddMovieList}
+        handleAddMovieListClose={handleAddMovieListClose}
       />
-      <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Give your movie list a name.</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => {
-              console.log(e.key)
-              if (e.key == 'Enter' && name !== '') {
-                createNewMovieListWithNameAndMovie(name, currentMovie)
-                handleAddMovieListClose()
-              }
-            }}
-          ></input>
-        </Modal.Body>
-        <Modal.Body
-          className="no-padding-top"
-          style={{
-            display: movieLists.some((movielist) => movielist.name == name)
-              ? 'block'
-              : 'none',
-          }}
-        >
-          This movie list already exists.
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              createNewMovieListWithNameAndMovie(name, currentMovie)
-              handleAddMovieListClose()
-            }}
-            disabled={movieLists.some((movielist) => movielist.name == name)}
-          >
-            Create
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
       {currentUser == null && (
         <Alert variant="info" className="align-left">
-          <Alert.Link href="/login">Create an account</Alert.Link> to save your
+          <Alert.Link href="/signup">Create an account</Alert.Link> to save your
           favorites and movie list(s).
         </Alert>
       )}
@@ -308,7 +249,14 @@ export const Favorites = () => {
                             <Popover.Body
                               onClick={() => {
                                 setName(movielist.name)
-                                addToMovieList(movielist, favorite)
+                                addToMovieList(
+                                  movielist,
+                                  favorite,
+                                  movieLists,
+                                  setMovieLists,
+                                  currentUser,
+                                  favorites,
+                                )
                               }}
                             >
                               {movielist.name}
@@ -463,7 +411,14 @@ export const Favorites = () => {
                               <Popover.Body
                                 onClick={() => {
                                   setName(movielist.name)
-                                  addToMovieList(movielist, movie)
+                                  addToMovieList(
+                                    movielist,
+                                    movie,
+                                    movieLists,
+                                    setMovieLists,
+                                    currentUser,
+                                    favorites,
+                                  )
                                 }}
                               >
                                 {movielist.name}
@@ -480,7 +435,12 @@ export const Favorites = () => {
                       <AiOutlineMinusSquare
                         className="card-icons remove-movie"
                         onClick={() => {
-                          removeFromMovieList(movielist, movie)
+                          removeFromMovieList(
+                            movielist,
+                            movie,
+                            movieLists,
+                            setMovieLists,
+                          )
                         }}
                       />
 
@@ -574,135 +534,27 @@ export const Favorites = () => {
                     </Button>
                   </div>
 
-                  <Modal
-                    show={showMovieListsClear}
-                    onHide={handleCloseMovieListsClear}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>Clear movie list</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      Are you sure you want to clear {currentMovieListName}?
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="secondary"
-                        onClick={handleCloseMovieListsClear}
-                      >
-                        No
-                      </Button>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          const index = movieLists.findIndex(
-                            (list) => list.name == currentMovieListName,
-                          )
-                          movieLists[index].list = []
-                          setMovieLists([...movieLists])
-                          handleCloseMovieListsClear()
-                        }}
-                      >
-                        Yes
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                  <ClearMovieListModal
+                    showMovieListsClear={showMovieListsClear}
+                    handleCloseMovieListsClear={handleCloseMovieListsClear}
+                    currentMovieListName={currentMovieListName}
+                  />
 
-                  <Modal
-                    show={showMovieListsDelete}
-                    onHide={handleCloseMovieListsDelete}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>Delete movie list</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      Are you sure you want to delete {currentMovieListName}?
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="secondary"
-                        onClick={handleCloseMovieListsDelete}
-                      >
-                        No
-                      </Button>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          const deletedFromAccordianList = movieLists.filter(
-                            (list) => list.name !== currentMovieListName,
-                          )
-                          setMovieLists([...deletedFromAccordianList])
-                          handleCloseMovieListsDelete()
-                        }}
-                      >
-                        Yes
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                  <DeleteMovieListModal
+                    showMovieListsDelete={showMovieListsDelete}
+                    handleCloseMovieListsDelete={handleCloseMovieListsDelete}
+                    currentMovieListName={currentMovieListName}
+                  />
 
-                  <Modal
-                    show={showEditMovieLists}
-                    onHide={handleCloseEditMovieLists}
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>Edit movie list name</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <input
-                        value={editCurrentMovieListName}
-                        onChange={(e) =>
-                          setEditCurrentMovieListName(e.target.value)
-                        }
-                        onKeyDown={(e) => {
-                          if (
-                            e.key == 'Enter' &&
-                            editCurrentMovieListName !== ''
-                          ) {
-                            handleShowEditMovieLists(movielist.name)
-                            const index = movieLists.findIndex(
-                              (list) => list.name == currentMovieListName,
-                            )
-                            movieLists[index].name = editCurrentMovieListName
-                            setMovieLists([...movieLists])
-                            handleCloseEditMovieLists()
-                          }
-                        }}
-                      ></input>
-                    </Modal.Body>
-                    <Modal.Body
-                      className="no-padding-top"
-                      style={{
-                        display: movieLists.some(
-                          (movielist) =>
-                            movielist.name == editCurrentMovieListName,
-                        )
-                          ? 'block'
-                          : 'none',
-                      }}
-                    >
-                      This movie list name already exists.
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          if (editCurrentMovieListName !== '') {
-                            const index = movieLists.findIndex(
-                              (list) => list.name == currentMovieListName,
-                            )
-                            movieLists[index].name = editCurrentMovieListName
-                            setMovieLists([...movieLists])
-                            handleCloseEditMovieLists()
-                          }
-                        }}
-                        disabled={movieLists.some(
-                          (movielist) =>
-                            movielist.name == editCurrentMovieListName,
-                        )}
-                      >
-                        Confirm
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+                  <EditMovieListNameModal
+                    showEditMovieLists={showEditMovieLists}
+                    handleShowEditMovieLists={handleShowEditMovieLists}
+                    handleCloseEditMovieLists={handleCloseEditMovieLists}
+                    editCurrentMovieListName={editCurrentMovieListName}
+                    setEditCurrentMovieListName={setEditCurrentMovieListName}
+                    movielist={movielist}
+                    currentMovieListName={currentMovieListName}
+                  />
                 </div>
               </Accordion.Body>
             )}

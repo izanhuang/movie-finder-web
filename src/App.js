@@ -17,7 +17,7 @@ import { FullPlot } from './components/FullPlot/FullPlot'
 import { Favorites } from './components/Favorites/Favorites'
 import { Signup } from './components/Signup/Signup'
 import { NotFound } from './components/NotFound'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { AuthProvider } from './contexts/AuthContext'
 import Login from './components/Login'
@@ -30,7 +30,7 @@ import { MovieListDemo } from './utils/MovieListDemo'
 import { useAuth } from './contexts/AuthContext'
 import db from './firebase'
 import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
-import LoadMovieListDemo from './utils/LoadMovieListDemo'
+import loadMovieListDemo from './utils/loadMovieListDemo'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -40,6 +40,8 @@ function App() {
   const [totalResults, setTotalResults] = useState(0)
   const [findByTitle, setFindByTitle] = useState('')
   const [page, setPage] = useState(1)
+  const [name, setName] = useState('')
+  const [currentMovie, setCurrentMovie] = useState({})
 
   useEffect(() => {
     if (movies && movies.length > 0 && totalResults > 0) {
@@ -69,29 +71,29 @@ function App() {
 
   useEffect(() => {
     if (currentUser == undefined) {
-      LoadMovieListDemo(setFavorites, setMovieLists)
+      loadMovieListDemo(setFavorites, setMovieLists)
     }
   }, [])
 
-  const handleEdit = async () => {
-    if (currentUser) {
-      const docRef = doc(db, 'UserMovieLists', currentUser.uid)
-      const payload = { favorites, movieLists }
-      await setDoc(docRef, payload)
-    }
-  }
+  // const handleEdit = async () => {
+  //   if (currentUser) {
+  //     const docRef = doc(db, 'UserMovieLists', currentUser.uid)
+  //     const payload = { favorites, movieLists }
+  //     await setDoc(docRef, payload)
+  //   }
+  // }
 
-  const handleAddDemo = async () => {
-    const docRef = doc(db, 'UserMovieLists', 'Demo')
-    const payload = { favorites, movieLists }
-    await setDoc(docRef, payload)
-    console.log('Added Demo')
-  }
+  // const handleAddDemo = async () => {
+  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
+  //   const payload = { favorites, movieLists }
+  //   await setDoc(docRef, payload)
+  //   console.log('Added Demo')
+  // }
 
-  const handleLogOutReset = async () => {
-    const docRef = doc(db, 'UserMovieLists', 'Demo')
-    await getDoc(docRef)
-  }
+  // const handleLogOutReset = async () => {
+  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
+  //   await getDoc(docRef)
+  // }
 
   return (
     <Router>
@@ -110,6 +112,10 @@ function App() {
           setTotalResults,
           page,
           setPage,
+          name,
+          setName,
+          currentMovie,
+          setCurrentMovie,
         }}
       >
         <AuthProvider>

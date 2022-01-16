@@ -3,10 +3,9 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import { Link, useHistory } from 'react-router-dom'
-import { updateCurrentUser } from 'firebase/auth'
 import { useAuth } from '../contexts/AuthContext'
 import Container from 'react-bootstrap/Container'
-import LoadMovieListDemo from '../utils/LoadMovieListDemo'
+import loadMovieListDemo from '../utils/loadMovieListDemo'
 import { MoviesContext } from '../contexts/movies-context'
 
 export default function Dashboard() {
@@ -47,7 +46,7 @@ export default function Dashboard() {
             variant="link"
             className="logout-button"
             onClick={() => {
-              LoadMovieListDemo(setFavorites, setMovieLists)
+              loadMovieListDemo(setFavorites, setMovieLists)
               handleLogout()
             }}
           >
