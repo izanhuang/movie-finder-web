@@ -93,17 +93,15 @@ export const Favorites = () => {
 
   useEffect(() => {}, [currentMovieListName])
 
-  useEffect(() => {
-    console.log('useEffect movieLists ', movieLists)
-  }, [movieLists])
+  useEffect(() => {}, [movieLists])
 
   useEffect(() => {}, [name])
 
-  // useEffect(() => {
-  //   if (currentUser && currentUser != null) {
-  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (currentUser && currentUser != null) {
+      loadUserDocument(currentUser, setFavorites, setMovieLists)
+    }
+  }, [])
 
   // const handleAddDemo = async () => {
   //   const docRef = doc(db, 'UserMovieLists', 'Demo')
@@ -289,7 +287,11 @@ export const Favorites = () => {
                           )
                         }}
                       />
-                      <FavoriteMovie componentName="favorites" movie={movie} />
+                      <FavoriteMovie
+                        componentName="favorites"
+                        movie={movie}
+                        currentUser={currentUser}
+                      />
                       <Card.Body
                         onClick={() => {
                           history.push(`/fullPlot/${movie.Type}/${movie.Title}`)

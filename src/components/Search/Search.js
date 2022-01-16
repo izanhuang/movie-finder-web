@@ -151,7 +151,11 @@ export const Search = () => {
                   handleAddMovieListShow={handleAddMovieListShow}
                   currentUser={currentUser}
                 />
-                <FavoriteMovie componentName="search" movie={movie} />
+                <FavoriteMovie
+                  componentName="search"
+                  movie={movie}
+                  currentUser={currentUser}
+                />
                 <img
                   alt={movie.Title}
                   className="card-img-top"

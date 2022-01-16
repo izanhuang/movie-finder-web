@@ -1,9 +1,16 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { MoviesContext } from '../contexts/movies-context'
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai'
+import updateUserDocument from '../utils/updateUserDocument'
+import loadUserDocument from '../utils/loadUserDocument'
 
-export default function FavoriteMovie({ componentName, movie }) {
-  const { favorites, setFavorites } = useContext(MoviesContext)
+export default function FavoriteMovie({ componentName, movie, currentUser }) {
+  const { favorites, setFavorites, movieLists, setMovieLists } = useContext(
+    MoviesContext,
+  )
+
+  useEffect(() => {}, [favorites, currentUser])
+
   return (
     <div>
       <AiOutlineStar
@@ -31,8 +38,11 @@ export default function FavoriteMovie({ componentName, movie }) {
                 fav.Year === movie.Year,
             )
           ) {
-            const addedToFavorites = [...favorites, movie]
-            setFavorites(addedToFavorites)
+            const newFavorites = [...favorites, movie]
+            setFavorites(newFavorites)
+            if (currentUser != null) {
+              updateUserDocument(currentUser, newFavorites, movieLists)
+            }
           }
         }}
       />
@@ -58,6 +68,9 @@ export default function FavoriteMovie({ componentName, movie }) {
             (fav) => fav.imdbID !== movie.imdbID,
           )
           setFavorites(deletedFromFavorites)
+          if (currentUser != null) {
+            updateUserDocument(currentUser, deletedFromFavorites, movieLists)
+          }
         }}
       />
     </div>

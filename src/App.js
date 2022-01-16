@@ -70,14 +70,21 @@ function App() {
 
   const currentUser = useAuth()
 
-  useEffect(() => {
-    // if (currentUser == undefined) {
-    //   loadMovieListDemo(setFavorites, setMovieLists)
-    // }
-    // if (currentUser != undefined) {
-    //   loadUserDocument(currentUser, setFavorites, setMovieLists)
-    // }
-  }, [])
+  // useEffect(() => {
+  //   // if (currentUser == undefined) {
+  //   //   loadMovieListDemo(setFavorites, setMovieLists)
+  //   // }
+  //   if (currentUser != undefined) {
+  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
+  //   }
+  // }, [])
+
+  // useEffect(() => {
+  //   console.log('Load on login on not null: ', currentUser)
+  //   if (currentUser != undefined) {
+  //     return loadUserDocument(currentUser, setFavorites, setMovieLists)
+  //   }
+  // }, [currentUser])
 
   // const handleEdit = async () => {
   //   if (currentUser) {

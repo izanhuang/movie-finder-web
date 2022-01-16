@@ -58,7 +58,11 @@ export const FullPlot = () => {
           handleAddMovieListShow={handleAddMovieListShow}
           currentUser={currentUser}
         />
-        <FavoriteMovie componentName="info" movie={fullPlot} />
+        <FavoriteMovie
+          componentName="info"
+          movie={fullPlot}
+          currentUser={currentUser}
+        />
       </div>
       <div>
         <div className="fixed-row text-muted">
