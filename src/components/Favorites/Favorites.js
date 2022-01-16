@@ -5,9 +5,7 @@ import Card from 'react-bootstrap/Card'
 import Accordion from 'react-bootstrap/Accordion'
 import { useHistory } from 'react-router-dom'
 import {
-  AiOutlineStar,
   AiFillStar,
-  AiOutlinePlusCircle,
   AiOutlineEdit,
   AiOutlineDelete,
   AiOutlineClear,
@@ -15,25 +13,21 @@ import {
 } from 'react-icons/ai'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
-import Modal from 'react-bootstrap/Modal'
-import Popover from 'react-bootstrap/Popover'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
 import db from '../../firebase'
 import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
 import loadUserDocument from '../../utils/loadUserDocument'
 import updateUserDocument from '../../utils/updateUserDocument.js'
-import {
-  createNewMovieListWithNameAndMovie,
-  addToMovieList,
-  removeFromMovieList,
-} from '../../utils/MovieListsUtils'
+import { removeFromMovieList } from '../../utils/MovieListsUtils'
 import CustomToastContainer from '../CustomToastContainer'
 import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
 import ClearMovieListModal from '../Modals/ClearMovieListModal'
 import DeleteMovieListModal from '../Modals/DeleteMovieListModal'
 import EditMovieListNameModal from '../Modals/EditMovieListNameModal'
+import ClearFavoritesModal from '../Modals/ClearFavoritesModal'
+import FavoriteMovie from '../FavoriteMovie'
+import CustomOverlayTrigger from '../CustomOverlayTrigger'
 
 export const Favorites = () => {
   const { currentUser } = useAuth()
@@ -44,7 +38,6 @@ export const Favorites = () => {
     setMovieLists,
     name,
     setName,
-    setCurrentMovie,
   } = useContext(MoviesContext)
   const [activeAccordianItems, setActiveAccordianItems] = useState(['0'])
 
@@ -94,35 +87,17 @@ export const Favorites = () => {
 
   let history = useHistory()
 
-  useEffect(() => {
-    // console.log(favorites)
-  }, [favorites])
+  useEffect(() => {}, [favorites])
 
-  useEffect(() => {
-    // console.log(activeAccordianItems)
-  }, [activeAccordianItems])
+  useEffect(() => {}, [activeAccordianItems])
 
-  useEffect(() => {
-    // console.log(currentMovieListName)
-  }, [currentMovieListName])
-
-  // function removeFromMovieList(movielist, movieParam) {
-  //   const index = movieLists.findIndex((list) => list == movielist)
-  //   const newMovieList = movieLists[index].list.filter(
-  //     (movie) => movie.imdbID !== movieParam.imdbID,
-  //   )
-  //   movieLists[index].list = newMovieList
-  //   notifyRemovedMovie(movieParam.Title, movielist.name)
-  //   setMovieLists([...movieLists])
-  // }
+  useEffect(() => {}, [currentMovieListName])
 
   useEffect(() => {
     console.log('useEffect movieLists ', movieLists)
   }, [movieLists])
 
-  useEffect(() => {
-    // console.log(name)
-  }, [name])
+  useEffect(() => {}, [name])
 
   useEffect(() => {
     console.log(currentUser)
@@ -222,53 +197,12 @@ export const Favorites = () => {
                         )
                       }}
                     />
-                    <OverlayTrigger
-                      trigger="click"
-                      key="bottom-start"
-                      placement="bottom-start"
-                      rootClose={true}
-                      overlay={
-                        <Popover id="popover-positioned-bottom-start">
-                          <Popover.Header as="h3">
-                            Add to movie list
-                          </Popover.Header>
-                          <Popover.Body className="popover-button">
-                            <Button
-                              variant="dark"
-                              className="custom-button"
-                              onClick={() => {
-                                document.body.click()
-                                setCurrentMovie(favorite)
-                                handleAddMovieListShow()
-                              }}
-                            >
-                              New movie list
-                            </Button>
-                          </Popover.Body>
-                          {movieLists.map((movielist) => (
-                            <Popover.Body
-                              onClick={() => {
-                                setName(movielist.name)
-                                addToMovieList(
-                                  movielist,
-                                  favorite,
-                                  movieLists,
-                                  setMovieLists,
-                                  currentUser,
-                                  favorites,
-                                )
-                              }}
-                            >
-                              {movielist.name}
-                            </Popover.Body>
-                          ))}
-                        </Popover>
-                      }
-                    >
-                      <button className="add-to-list card-icons">
-                        <AiOutlinePlusCircle />
-                      </button>
-                    </OverlayTrigger>
+                    <CustomOverlayTrigger
+                      componentName="favorites"
+                      movie={favorite}
+                      handleAddMovieListShow={handleAddMovieListShow}
+                      currentUser={currentUser}
+                    />
                     <div>
                       <AiFillStar
                         className="star card-icons gold-fill"
@@ -306,34 +240,10 @@ export const Favorites = () => {
                   </Button>
                 </div>
 
-                <Modal
-                  show={showFavoritesClear}
-                  onHide={handleCloseFavoritesClear}
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title>Clear favorites list</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Are you sure you want to clear your favorites list?
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button
-                      variant="secondary"
-                      onClick={handleCloseFavoritesClear}
-                    >
-                      No
-                    </Button>
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        setFavorites([])
-                        handleCloseFavoritesClear()
-                      }}
-                    >
-                      Yes
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                <ClearFavoritesModal
+                  showFavoritesClear={showFavoritesClear}
+                  handleCloseFavoritesClear={handleCloseFavoritesClear}
+                />
               </div>
             </Accordion.Body>
           )}
@@ -383,55 +293,12 @@ export const Favorites = () => {
                           history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
                         }}
                       />
-
-                      <OverlayTrigger
-                        trigger="click"
-                        key="bottom-start"
-                        placement="bottom-start"
-                        rootClose={true}
-                        overlay={
-                          <Popover id="popover-positioned-bottom-start">
-                            <Popover.Header as="h3">
-                              Add to movie list
-                            </Popover.Header>
-                            <Popover.Body className="popover-button">
-                              <Button
-                                variant="dark"
-                                className="custom-button"
-                                onClick={() => {
-                                  document.body.click()
-                                  setCurrentMovie(movie)
-                                  handleAddMovieListShow()
-                                }}
-                              >
-                                New movie list
-                              </Button>
-                            </Popover.Body>
-                            {movieLists.map((movielist) => (
-                              <Popover.Body
-                                onClick={() => {
-                                  setName(movielist.name)
-                                  addToMovieList(
-                                    movielist,
-                                    movie,
-                                    movieLists,
-                                    setMovieLists,
-                                    currentUser,
-                                    favorites,
-                                  )
-                                }}
-                              >
-                                {movielist.name}
-                              </Popover.Body>
-                            ))}
-                          </Popover>
-                        }
-                      >
-                        <button className="add-to-list card-icons">
-                          <AiOutlinePlusCircle />
-                        </button>
-                      </OverlayTrigger>
-
+                      <CustomOverlayTrigger
+                        componentName="favorites"
+                        movie={movie}
+                        handleAddMovieListShow={handleAddMovieListShow}
+                        currentUser={currentUser}
+                      />
                       <AiOutlineMinusSquare
                         className="card-icons remove-movie"
                         onClick={() => {
@@ -443,56 +310,7 @@ export const Favorites = () => {
                           )
                         }}
                       />
-
-                      <div>
-                        <AiOutlineStar
-                          className="search-star card-icons"
-                          style={{
-                            display: favorites.some(
-                              (fav) =>
-                                fav.Poster === movie.Poster &&
-                                fav.Title === movie.Title &&
-                                fav.Year === movie.Year,
-                            )
-                              ? 'none'
-                              : 'block',
-                          }}
-                          onClick={() => {
-                            if (
-                              !favorites.some(
-                                (fav) =>
-                                  fav.Poster === movie.Poster &&
-                                  fav.Title === movie.Title &&
-                                  fav.Year === movie.Year,
-                              )
-                            ) {
-                              const addedToFavorites = [...favorites, movie]
-                              setFavorites(addedToFavorites)
-                            }
-                          }}
-                        />
-
-                        <AiFillStar
-                          className="star card-icons gold-fill"
-                          style={{
-                            display: favorites.some(
-                              (fav) =>
-                                fav.Poster === movie.Poster &&
-                                fav.Title === movie.Title &&
-                                fav.Year === movie.Year,
-                            )
-                              ? 'block'
-                              : 'none',
-                          }}
-                          onClick={() => {
-                            const deletedFromFavorites = favorites.filter(
-                              (fav) => fav.imdbID !== movie.imdbID,
-                            )
-                            setFavorites(deletedFromFavorites)
-                          }}
-                        />
-                      </div>
-
+                      <FavoriteMovie componentName="favorites" movie={movie} />
                       <Card.Body
                         onClick={() => {
                           history.push(`/fullPlot/${movie.Type}/${movie.Title}`)

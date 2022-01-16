@@ -5,20 +5,13 @@ import { MoviesContext } from '../../contexts/movies-context'
 import './Search.css'
 import { useHistory } from 'react-router-dom'
 import Pagination from 'react-bootstrap/Pagination'
-import { AiOutlineStar, AiFillStar, AiOutlinePlusCircle } from 'react-icons/ai'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
-import Button from 'react-bootstrap/Button'
-import Modal from 'react-bootstrap/Modal'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
 import loadUserDocument from '../../utils/loadUserDocument'
-import {
-  createNewMovieListWithNameAndMovie,
-  addToMovieList,
-} from '../../utils/MovieListsUtils'
 import CustomToastContainer from '../CustomToastContainer'
 import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
+import FavoriteMovie from '../FavoriteMovie'
+import CustomOverlayTrigger from '../CustomOverlayTrigger'
 
 export const Search = () => {
   const { currentUser } = useAuth()
@@ -38,9 +31,7 @@ export const Search = () => {
     setPage,
     name,
     setName,
-    setCurrentMovie,
   } = useContext(MoviesContext)
-  const [type, setType] = useState('')
   const [nextPageDisabled, setNextPageDisabled] = useState(false)
 
   const [showAddMovieList, setShowAddMovieList] = useState(false)
@@ -58,7 +49,6 @@ export const Search = () => {
 
   function handleSubmit(e) {
     e.preventDefault()
-    // const firstPage = 1
     setPage(1)
     retrieveMovies()
   }
@@ -96,7 +86,6 @@ export const Search = () => {
   useEffect(() => {
     console.log('Current page: ', page)
     retrieveMovies()
-    // console.log('effect')
     const checkNextPage = page + 1
     axios
       .get(
@@ -104,7 +93,6 @@ export const Search = () => {
       )
       .then((res) => {
         const results = res.data.Search
-        // console.log('Checking page', page)
         if (results !== undefined) {
           setNextPageDisabled(false)
         }
@@ -112,42 +100,15 @@ export const Search = () => {
       .catch(() => setNextPageDisabled(true))
   }, [page])
 
-  useEffect(() => {
-    // console.log('favorites', favorites)
-  }, [favorites])
+  useEffect(() => {}, [favorites])
 
   useEffect(() => {
     console.log('Movies: ', movies)
   }, [movies])
 
-  // function createNewMovieListWithNameAndMovie(name, movie) {
-  //   movieLists[movieLists.length] = { name: name, list: [movie] }
-  //   setMovieLists([...movieLists])
-  //   notifyCreatedMovieList(movie.Title, name)
-  //   setName('')
-  // }
+  useEffect(() => {}, [movieLists])
 
-  // function addToMovieList(movielist, movieParam) {
-  //   const index = movieLists.findIndex((list) => list == movielist)
-  //   if (
-  //     !movieLists[index].list.some((movie) => movie.imdbID == movieParam.imdbID)
-  //   ) {
-  //     movieLists[index].list = [...movieLists[index].list, movieParam]
-  //     setMovieLists([...movieLists])
-  //     updateUserDocument(currentUser, favorites, movieLists)
-  //     notifyAddedMovie(movieParam.Title, movielist.name)
-  //   } else {
-  //     notifyMovieAlreadyExists(movieParam.Title, movielist.name)
-  //   }
-  // }
-
-  useEffect(() => {
-    // console.log(movieLists)
-  }, [movieLists])
-
-  useEffect(() => {
-    // console.log(name)
-  }, [name])
+  useEffect(() => {}, [name])
 
   useEffect(() => {
     if (currentUser && currentUser !== undefined) {
@@ -183,100 +144,13 @@ export const Search = () => {
           movies.map((movie, index) => (
             <div key={index} className="col movie-card">
               <div className="card">
-                <OverlayTrigger
-                  trigger="click"
-                  key="bottom-start"
-                  placement="bottom-start"
-                  rootClose={true}
-                  overlay={
-                    <Popover id="popover-positioned-bottom-start">
-                      <Popover.Header as="h3">Add to movie list</Popover.Header>
-                      <Popover.Body className="popover-button">
-                        <Button
-                          variant="dark"
-                          className="custom-button"
-                          onClick={() => {
-                            document.body.click()
-                            setCurrentMovie(movie)
-                            handleAddMovieListShow()
-                          }}
-                        >
-                          New movie list
-                        </Button>
-                      </Popover.Body>
-                      {movieLists.map((movielist) => (
-                        <Popover.Body
-                          onClick={() => {
-                            setName(movielist.name)
-                            addToMovieList(
-                              movielist,
-                              movie,
-                              movieLists,
-                              setMovieLists,
-                              currentUser,
-                              favorites,
-                            )
-                          }}
-                        >
-                          {movielist.name}
-                        </Popover.Body>
-                      ))}
-                    </Popover>
-                  }
-                >
-                  <button className="search-add-to-list card-icons">
-                    <AiOutlinePlusCircle />
-                  </button>
-                </OverlayTrigger>
-
-                <div>
-                  <AiOutlineStar
-                    className="search-star card-icons"
-                    style={{
-                      display: favorites.some(
-                        (fav) =>
-                          fav.Poster === movie.Poster &&
-                          fav.Title === movie.Title &&
-                          fav.Year === movie.Year,
-                      )
-                        ? 'none'
-                        : 'block',
-                    }}
-                    onClick={() => {
-                      if (
-                        !favorites.some(
-                          (fav) =>
-                            fav.Poster === movie.Poster &&
-                            fav.Title === movie.Title &&
-                            fav.Year === movie.Year,
-                        )
-                      ) {
-                        const addedToFavorites = [...favorites, movie]
-                        setFavorites(addedToFavorites)
-                      }
-                    }}
-                  />
-
-                  <AiFillStar
-                    className="star card-icons gold-fill"
-                    style={{
-                      display: favorites.some(
-                        (fav) =>
-                          fav.Poster === movie.Poster &&
-                          fav.Title === movie.Title &&
-                          fav.Year === movie.Year,
-                      )
-                        ? 'block'
-                        : 'none',
-                    }}
-                    onClick={() => {
-                      const deletedFromFavorites = favorites.filter(
-                        (fav) => fav.imdbID !== movie.imdbID,
-                      )
-                      setFavorites(deletedFromFavorites)
-                    }}
-                  />
-                </div>
+                <CustomOverlayTrigger
+                  componentName="search"
+                  movie={movie}
+                  handleAddMovieListShow={handleAddMovieListShow}
+                  currentUser={currentUser}
+                />
+                <FavoriteMovie componentName="search" movie={movie} />
                 <img
                   alt={movie.Title}
                   className="card-img-top"
