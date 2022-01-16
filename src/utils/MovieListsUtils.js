@@ -17,9 +17,15 @@ export function createNewMovieListWithNameAndMovie(
   movieLists,
   setMovieLists,
   setName,
+  currentUser,
+  favorites,
 ) {
   movieLists[movieLists.length] = { name: name, list: [movie] }
   setMovieLists([...movieLists])
+  console.log('MOVIELISTUTILS: ', currentUser)
+  if (currentUser != null) {
+    updateUserDocument(currentUser, favorites, movieLists)
+  }
   notifyCreatedMovieList(movie.Title, name)
   setName('')
 }
@@ -38,7 +44,9 @@ export function addToMovieList(
   ) {
     movieLists[index].list = [...movieLists[index].list, movieParam]
     setMovieLists([...movieLists])
-    updateUserDocument(currentUser, favorites, movieLists)
+    if (currentUser != null) {
+      updateUserDocument(currentUser, favorites, movieLists)
+    }
     notifyAddedMovie(movieParam.Title, movielist.name)
   } else {
     notifyMovieAlreadyExists(movieParam.Title, movielist.name)

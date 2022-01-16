@@ -48,6 +48,7 @@ export const FullPlot = () => {
       <AddMovieToMovieListModal
         showAddMovieList={showAddMovieList}
         handleAddMovieListClose={handleAddMovieListClose}
+        currentUser={currentUser}
       />
       <div className="info-header">
         <h1>{fullPlotTitle}</h1>

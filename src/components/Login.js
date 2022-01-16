@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useContext } from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
@@ -8,14 +8,18 @@ import { useAuth } from '../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import useMounted from '../hooks/useMounted.js'
 import { FaGoogle } from 'react-icons/fa'
+import loadUserDocument from '../utils/loadUserDocument'
+import { MoviesContext } from '../contexts/movies-context'
 
 export default function Login() {
   const emailRef = useRef()
   const passwordRef = useRef()
-  const { signInWithGoogle, login } = useAuth()
+  const { signInWithGoogle, login, currentUser } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
+
+  const { setFavorites, setMovieLists } = useContext(MoviesContext)
 
   const mounted = useMounted()
 
@@ -33,6 +37,13 @@ export default function Login() {
     }
     mounted.current && setLoading(false)
   }
+
+  useEffect(() => {
+    console.log('Load on login on not null: ', currentUser)
+    if (currentUser != null) {
+      loadUserDocument(currentUser, setFavorites, setMovieLists)
+    }
+  }, [currentUser])
 
   return (
     <div className="w-100" style={{ maxWidth: '400px' }}>

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import Container from 'react-bootstrap/Container'
 import loadMovieListDemo from '../utils/loadMovieListDemo'
 import { MoviesContext } from '../contexts/movies-context'
+import loadUserDocument from '../utils/loadUserDocument'
 
 export default function Dashboard() {
   const [error, setError] = useState('')
@@ -18,11 +19,19 @@ export default function Dashboard() {
     setError('')
     try {
       await logout()
+      setFavorites([])
+      setMovieLists([])
       history.push('/login')
     } catch (error) {
       setError('Failed to log out')
     }
   }
+
+  // useEffect(() => {
+  //   if (currentUser != null) {
+  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
+  //   }
+  // }, [])
 
   return (
     <Container
@@ -46,7 +55,6 @@ export default function Dashboard() {
             variant="link"
             className="logout-button"
             onClick={() => {
-              loadMovieListDemo(setFavorites, setMovieLists)
               handleLogout()
             }}
           >

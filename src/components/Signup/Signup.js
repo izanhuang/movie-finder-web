@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useContext, useEffect } from 'react'
 import './Signup.css'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
@@ -9,15 +9,20 @@ import { useAuth } from '../../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import useMounted from '../../hooks/useMounted.js'
 import { FaGoogle } from 'react-icons/fa'
+import updateUserDocument from '../../utils/updateUserDocument'
+import { MoviesContext } from '../../contexts/movies-context'
+import loadUserDocument from '../../utils/loadUserDocument'
 
 export const Signup = () => {
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
-  const { signInWithGoogle, signup } = useAuth()
+  const { signInWithGoogle, signup, currentUser } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
+
+  const { favorites, movieLists } = useContext(MoviesContext)
 
   const mounted = useMounted()
 
@@ -32,13 +37,20 @@ export const Signup = () => {
       setError('')
       setLoading(true)
       await signup(emailRef.current.value, passwordRef.current.value)
-      history.push('/login')
+      history.push('/dashboard')
     } catch (error) {
       console.log(error)
       setError('Failed to create an account')
     }
     mounted.current && setLoading(false)
   }
+
+  useEffect(() => {
+    console.log('Add document on not null: ', currentUser)
+    if (currentUser != null) {
+      updateUserDocument(currentUser, favorites, movieLists)
+    }
+  }, [currentUser])
 
   return (
     <div className="w-100" style={{ maxWidth: '400px' }}>
@@ -50,9 +62,6 @@ export const Signup = () => {
             <Form.Group className="mb-3" id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
-              {/* <Form.Text className="text-muted">
-                    We'll never share your email with anyone else.
-                  </Form.Text> */}
             </Form.Group>
 
             <Form.Group className="mb-3" id="password">

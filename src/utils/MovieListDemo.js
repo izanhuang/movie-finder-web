@@ -1,3 +1,8 @@
+export const EmptyMovieListDemo = {
+  name: 'Movie List #1',
+  list: [],
+}
+
 export const MovieListDemo = {
   name: 'Movie List Demo',
   list: [

@@ -110,11 +110,11 @@ export const Search = () => {
 
   useEffect(() => {}, [name])
 
-  useEffect(() => {
-    if (currentUser && currentUser !== undefined) {
-      loadUserDocument(currentUser, setFavorites, setMovieLists)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (currentUser && currentUser !== undefined) {
+  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
+  //   }
+  // }, [])
 
   return (
     <div className="container">
@@ -137,6 +137,7 @@ export const Search = () => {
       <AddMovieToMovieListModal
         showAddMovieList={showAddMovieList}
         handleAddMovieListClose={handleAddMovieListClose}
+        currentUser={currentUser}
       />
 
       <div className="movies-container container row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-5 row-cols-xl-5 g-4">

@@ -26,11 +26,12 @@ import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './components/ForgotPassword'
 import UpdateProfile from './components/UpdateProfile'
 import MyNavbar from './components/MyNavbar'
-import { MovieListDemo } from './utils/MovieListDemo'
+import { EmptyMovieListDemo, MovieListDemo } from './utils/MovieListDemo'
 import { useAuth } from './contexts/AuthContext'
 import db from './firebase'
 import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
 import loadMovieListDemo from './utils/loadMovieListDemo'
+import loadUserDocument from './utils/loadUserDocument'
 
 function App() {
   const [movies, setMovies] = useState([])
@@ -70,9 +71,12 @@ function App() {
   const currentUser = useAuth()
 
   useEffect(() => {
-    if (currentUser == undefined) {
-      loadMovieListDemo(setFavorites, setMovieLists)
-    }
+    // if (currentUser == undefined) {
+    //   loadMovieListDemo(setFavorites, setMovieLists)
+    // }
+    // if (currentUser != undefined) {
+    //   loadUserDocument(currentUser, setFavorites, setMovieLists)
+    // }
   }, [])
 
   // const handleEdit = async () => {

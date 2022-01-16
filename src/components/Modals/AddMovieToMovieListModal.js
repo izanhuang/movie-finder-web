@@ -7,10 +7,16 @@ import { createNewMovieListWithNameAndMovie } from '../../utils/MovieListsUtils'
 export default function AddMovieModal({
   showAddMovieList,
   handleAddMovieListClose,
+  currentUser,
 }) {
-  const { movieLists, setMovieLists, name, setName, currentMovie } = useContext(
-    MoviesContext,
-  )
+  const {
+    movieLists,
+    setMovieLists,
+    name,
+    setName,
+    currentMovie,
+    favorites,
+  } = useContext(MoviesContext)
 
   return (
     <Modal show={showAddMovieList} onHide={handleAddMovieListClose}>
@@ -31,6 +37,8 @@ export default function AddMovieModal({
                 movieLists,
                 setMovieLists,
                 setName,
+                currentUser,
+                favorites,
               )
               handleAddMovieListClose()
             }
@@ -57,6 +65,8 @@ export default function AddMovieModal({
               movieLists,
               setMovieLists,
               setName,
+              currentUser,
+              favorites,
             )
             handleAddMovieListClose()
           }}

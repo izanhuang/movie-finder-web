@@ -7,10 +7,10 @@ export default async function updateUserDocument(
   favorites,
   movieLists,
 ) {
-  if (currentUser) {
-    const docRef = doc(db, 'UserMovieLists', currentUser.uid)
-    console.log('Changed movieLists ', movieLists)
-    const payload = { favorites, movieLists }
-    await setDoc(docRef, payload)
-  }
+  console.log('Inside update, no null: ', currentUser.uid)
+  const docRef = doc(db, 'UserMovieLists', currentUser.uid)
+  console.log('Changed movieLists ', movieLists)
+  const payload = { favorites, movieLists }
+  await setDoc(docRef, payload)
+  console.log('Added doc')
 }

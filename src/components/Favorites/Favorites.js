@@ -99,43 +99,21 @@ export const Favorites = () => {
 
   useEffect(() => {}, [name])
 
-  useEffect(() => {
-    console.log(currentUser)
-    if (currentUser && currentUser !== undefined) {
-      console.log(currentUser)
-      loadUserDocument(currentUser, setFavorites, setMovieLists)
-    }
-  }, [])
-
-  // const handleEdit = async () => {
-  //   if (currentUser) {
-  //     const docRef = doc(db, 'UserMovieLists', currentUser.uid)
-  //     const payload = { favorites, movieLists }
-  //     await setDoc(docRef, payload)
+  // useEffect(() => {
+  //   if (currentUser && currentUser != null) {
+  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
   //   }
-  // }
+  // }, [])
 
-  const handleAddDemo = async () => {
-    const docRef = doc(db, 'UserMovieLists', 'Demo')
-    const payload = { favorites, movieLists }
-    await setDoc(docRef, payload)
-    console.log('Added Demo')
-  }
-
-  // const handleLogOutReset = async () => {
-  //   // const docRef = doc(db, 'UserMovieLists', 'Demo')
-  //   // await getDoc(docRef)
-  //   loadMovieListDemo(setFavorites, setMovieLists)
+  // const handleAddDemo = async () => {
+  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
+  //   const payload = { favorites, movieLists }
+  //   await setDoc(docRef, payload)
+  //   console.log('Added Demo')
   // }
 
   return (
     <div className="container favorites-container">
-      {/* <Button onClick={handleAddDemo}>Set Demo</Button> */}
-      <Button
-        onClick={() => updateUserDocument(currentUser, favorites, movieLists)}
-      >
-        Update my list
-      </Button>
       <h1 className="display-4 display-margin">Favorites</h1>
 
       <CustomToastContainer autoClose={2000} />
@@ -143,6 +121,7 @@ export const Favorites = () => {
       <AddMovieToMovieListModal
         showAddMovieList={showAddMovieList}
         handleAddMovieListClose={handleAddMovieListClose}
+        currentUser={currentUser}
       />
 
       {currentUser == null && (
