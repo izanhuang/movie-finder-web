@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 import { MoviesContext } from '../contexts/movies-context'
-import { AiOutlineStar, AiFillStar } from 'react-icons/ai'
 import updateUserDocument from '../utils/updateUserDocument'
-import loadUserDocument from '../utils/loadUserDocument'
 
 export default function FavoriteMovie({ componentName, movie, currentUser }) {
   const { favorites, setFavorites, movieLists, setMovieLists } = useContext(

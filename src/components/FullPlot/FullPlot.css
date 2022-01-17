@@ -1,6 +1,6 @@
 .movie-info {
   font-weight: 400;
-  text-align: left;
+  text-align: left !important;
   margin-top: 70px;
   padding-bottom: 60px;
   height: auto;

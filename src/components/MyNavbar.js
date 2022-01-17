@@ -1,8 +1,8 @@
-import React, { useEffect, useContext } from 'react'
-import { Navbar, Container, Nav } from 'react-bootstrap'
+import React, { useContext } from 'react'
+import { Container, Nav, Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import { MoviesContext } from '../contexts/movies-context'
 import { useAuth } from '../contexts/AuthContext'
+import { MoviesContext } from '../contexts/movies-context'
 
 export default function MyNavbar() {
   const { setMovies, setTitle } = useContext(MoviesContext)

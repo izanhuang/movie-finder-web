@@ -1,17 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
-import { withRouter } from 'react-router-dom'
-import { MoviesContext } from '../../contexts/movies-context'
-import './Search.css'
-import { useHistory } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
 import Pagination from 'react-bootstrap/Pagination'
+import { useHistory } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
-import loadUserDocument from '../../utils/loadUserDocument'
-import CustomToastContainer from '../CustomToastContainer'
-import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
-import FavoriteMovie from '../FavoriteMovie'
+import { MoviesContext } from '../../contexts/movies-context'
 import CustomOverlayTrigger from '../CustomOverlayTrigger'
+import CustomToastContainer from '../CustomToastContainer'
+import FavoriteMovie from '../FavoriteMovie'
+import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
+import './Search.css'
 
 export const Search = () => {
   const { currentUser } = useAuth()
@@ -21,9 +19,7 @@ export const Search = () => {
     title,
     setTitle,
     favorites,
-    setFavorites,
     movieLists,
-    setMovieLists,
     findByTitle,
     setFindByTitle,
     setTotalResults,
@@ -50,6 +46,7 @@ export const Search = () => {
   function handleSubmit(e) {
     e.preventDefault()
     setPage(1)
+    console.log('Handle submit retrieve')
     retrieveMovies()
   }
 
@@ -67,6 +64,7 @@ export const Search = () => {
           if (findByTitle !== title) {
             setFindByTitle(title)
           }
+          checkForNextPageResults(title)
         })
     } catch (error) {
       console.log(error)
@@ -83,21 +81,28 @@ export const Search = () => {
     setPage(nextPage)
   }
 
-  useEffect(() => {
-    // console.log('Current page: ', page)
-    retrieveMovies()
+  function checkForNextPageResults(searchTerm) {
     const checkNextPage = page + 1
     axios
       .get(
-        `https://www.omdbapi.com/?s=${title}&type=movie&page=${checkNextPage}&apikey=6fe3dbba`,
+        `https://www.omdbapi.com/?s=${searchTerm}&type=movie&page=${checkNextPage}&apikey=6fe3dbba`,
       )
       .then((res) => {
         const results = res.data.Search
+        console.log(results)
         if (results !== undefined) {
           setNextPageDisabled(false)
+        } else {
+          setNextPageDisabled(true)
         }
       })
-      .catch(() => setNextPageDisabled(true))
+  }
+
+  useEffect(() => {
+    // console.log('Current page: ', page)
+    if (findByTitle !== '') {
+      retrieveMovies()
+    }
   }, [page])
 
   useEffect(() => {}, [favorites])

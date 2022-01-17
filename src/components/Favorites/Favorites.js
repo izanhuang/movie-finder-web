@@ -1,34 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react'
-import './Favorites.css'
-import { MoviesContext } from '../../contexts/movies-context'
-import Card from 'react-bootstrap/Card'
 import Accordion from 'react-bootstrap/Accordion'
-import { useHistory } from 'react-router-dom'
-import {
-  AiFillStar,
-  AiOutlineEdit,
-  AiOutlineDelete,
-  AiOutlineClear,
-  AiOutlineMinusSquare,
-} from 'react-icons/ai'
 import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import {
+  AiFillStar,
+  AiOutlineClear,
+  AiOutlineEdit,
+  AiOutlineMinusSquare,
+} from 'react-icons/ai'
+import { Link, useHistory } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import { useAuth } from '../../contexts/AuthContext'
-import db from '../../firebase'
-import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
-import loadUserDocument from '../../utils/loadUserDocument'
-import updateUserDocument from '../../utils/updateUserDocument.js'
+import { MoviesContext } from '../../contexts/movies-context'
 import { removeFromMovieList } from '../../utils/MovieListsUtils'
+import updateUserDocument from '../../utils/updateUserDocument.js'
+import CustomOverlayTrigger from '../CustomOverlayTrigger'
 import CustomToastContainer from '../CustomToastContainer'
+import FavoriteMovie from '../FavoriteMovie'
 import AddMovieToMovieListModal from '../Modals/AddMovieToMovieListModal'
+import ClearFavoritesModal from '../Modals/ClearFavoritesModal'
 import ClearMovieListModal from '../Modals/ClearMovieListModal'
 import DeleteMovieListModal from '../Modals/DeleteMovieListModal'
 import EditMovieListNameModal from '../Modals/EditMovieListNameModal'
-import ClearFavoritesModal from '../Modals/ClearFavoritesModal'
-import FavoriteMovie from '../FavoriteMovie'
-import CustomOverlayTrigger from '../CustomOverlayTrigger'
-import { Link } from 'react-router-dom'
+import './Favorites.css'
 
 export const Favorites = () => {
   const { currentUser } = useAuth()
@@ -158,13 +153,18 @@ export const Favorites = () => {
                     className="favorite-card col-6 col-xs-6 col-sm-5"
                   >
                     <Card.Img
-                      src={favorite.Poster}
+                      src={
+                        favorite.Poster == 'N/A'
+                          ? 'https://2gyntc2a2i9a22ifya16a222-wpengine.netdna-ssl.com/wp-content/uploads/sites/29/2014/12/Image-Not-Available.jpg'
+                          : favorite.Poster
+                      }
                       onClick={() => {
                         history.push(
                           `/fullPlot/${favorite.Type}/${favorite.Title}`,
                         )
                       }}
                     />
+                    {console.log(favorite.Poster)}
                     <CustomOverlayTrigger
                       componentName="favorites"
                       movie={favorite}
@@ -267,7 +267,11 @@ export const Favorites = () => {
                       className="favorite-card col-6 col-xs-6 col-sm-5"
                     >
                       <Card.Img
-                        src={movie.Poster}
+                        src={
+                          movie.Poster == 'N/A'
+                            ? 'https://2gyntc2a2i9a22ifya16a222-wpengine.netdna-ssl.com/wp-content/uploads/sites/29/2014/12/Image-Not-Available.jpg'
+                            : movie.Poster
+                        }
                         onClick={() => {
                           history.push(`/fullPlot/${movie.Type}/${movie.Title}`)
                         }}

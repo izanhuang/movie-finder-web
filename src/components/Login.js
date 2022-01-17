@@ -1,25 +1,21 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
-import Form from 'react-bootstrap/Form'
+import React, { useRef, useState } from 'react'
+import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
-import { useAuth } from '../contexts/AuthContext'
-import { Link, useHistory } from 'react-router-dom'
-import useMounted from '../hooks/useMounted.js'
+import Form from 'react-bootstrap/Form'
 import { FaGoogle } from 'react-icons/fa'
-import loadUserDocument from '../utils/loadUserDocument'
-import { MoviesContext } from '../contexts/movies-context'
+import { Link, useHistory } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
+import useMounted from '../hooks/useMounted.js'
 
 export default function Login() {
   const emailRef = useRef()
   const passwordRef = useRef()
-  const { signInWithGoogle, login, currentUser } = useAuth()
+  const { signInWithGoogle, login } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   let history = useHistory()
-
-  const { setFavorites, setMovieLists } = useContext(MoviesContext)
 
   const mounted = useMounted()
 
