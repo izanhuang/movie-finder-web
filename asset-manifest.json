@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/movie-finder-web/static/css/main.aca1f0ff.chunk.css",
-    "main.js": "/movie-finder-web/static/js/main.1e15ec5d.chunk.js",
-    "main.js.map": "/movie-finder-web/static/js/main.1e15ec5d.chunk.js.map",
+    "main.js": "/movie-finder-web/static/js/main.a79d02f4.chunk.js",
+    "main.js.map": "/movie-finder-web/static/js/main.a79d02f4.chunk.js.map",
     "runtime-main.js": "/movie-finder-web/static/js/runtime-main.cd3c2d67.js",
     "runtime-main.js.map": "/movie-finder-web/static/js/runtime-main.cd3c2d67.js.map",
     "static/css/2.2cdc3437.chunk.css": "/movie-finder-web/static/css/2.2cdc3437.chunk.css",
-    "static/js/2.0c52672f.chunk.js": "/movie-finder-web/static/js/2.0c52672f.chunk.js",
-    "static/js/2.0c52672f.chunk.js.map": "/movie-finder-web/static/js/2.0c52672f.chunk.js.map",
+    "static/js/2.f07d2ad7.chunk.js": "/movie-finder-web/static/js/2.f07d2ad7.chunk.js",
+    "static/js/2.f07d2ad7.chunk.js.map": "/movie-finder-web/static/js/2.f07d2ad7.chunk.js.map",
     "static/js/3.5a557d86.chunk.js": "/movie-finder-web/static/js/3.5a557d86.chunk.js",
     "static/js/3.5a557d86.chunk.js.map": "/movie-finder-web/static/js/3.5a557d86.chunk.js.map",
     "index.html": "/movie-finder-web/index.html",
     "static/css/2.2cdc3437.chunk.css.map": "/movie-finder-web/static/css/2.2cdc3437.chunk.css.map",
     "static/css/main.aca1f0ff.chunk.css.map": "/movie-finder-web/static/css/main.aca1f0ff.chunk.css.map",
-    "static/js/2.0c52672f.chunk.js.LICENSE.txt": "/movie-finder-web/static/js/2.0c52672f.chunk.js.LICENSE.txt"
+    "static/js/2.f07d2ad7.chunk.js.LICENSE.txt": "/movie-finder-web/static/js/2.f07d2ad7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.cd3c2d67.js",
     "static/css/2.2cdc3437.chunk.css",
-    "static/js/2.0c52672f.chunk.js",
+    "static/js/2.f07d2ad7.chunk.js",
     "static/css/main.aca1f0ff.chunk.css",
-    "static/js/main.1e15ec5d.chunk.js"
+    "static/js/main.a79d02f4.chunk.js"
   ]
 }
