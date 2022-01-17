@@ -7,9 +7,14 @@ export default function loadUserDocument(
   setFavorites,
   setMovieLists,
 ) {
-  return onSnapshot(collection(db, 'UserMovieLists'), (snapshot) => {
+  onSnapshot(collection(db, 'UserMovieLists'), (snapshot) => {
     console.log('Load user document')
-    console.log(currentUser.uid)
+    // console.log(currentUser.uid)
+    // console.log(
+    //   snapshot.docs
+    //     .map((doc) => ({ ...doc.data(), id: doc.id }))
+    //     .some((doc) => doc == currentUser.uid),
+    // )
     setFavorites(
       ...snapshot.docs
         .map((doc) => ({ ...doc.data(), id: doc.id }))

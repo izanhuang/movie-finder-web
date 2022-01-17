@@ -38,12 +38,12 @@ export default function Login() {
     mounted.current && setLoading(false)
   }
 
-  useEffect(() => {
-    console.log('Load on login on not null: ', currentUser)
-    if (currentUser != null) {
-      loadUserDocument(currentUser, setFavorites, setMovieLists)
-    }
-  }, [currentUser])
+  // useEffect(() => {
+  //   console.log('Load on login on not null: ', currentUser)
+  //   if (currentUser != null) {
+  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
+  //   }
+  // }, [currentUser])
 
   return (
     <div className="w-100" style={{ maxWidth: '400px' }}>

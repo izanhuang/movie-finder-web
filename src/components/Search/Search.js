@@ -110,12 +110,6 @@ export const Search = () => {
 
   useEffect(() => {}, [name])
 
-  // useEffect(() => {
-  //   if (currentUser && currentUser !== undefined) {
-  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [])
-
   return (
     <div className="container">
       <h1 className="display-4 display-margin">Search</h1>

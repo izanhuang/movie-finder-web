@@ -2,13 +2,15 @@ import React, { useContext } from 'react'
 import { MoviesContext } from '../../contexts/movies-context'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import updateUserDocument from '../../utils/updateUserDocument'
 
 export default function ClearMovieListModal({
   showMovieListsClear,
   handleCloseMovieListsClear,
   currentMovieListName,
+  currentUser,
 }) {
-  const { movieLists, setMovieLists } = useContext(MoviesContext)
+  const { favorites, movieLists, setMovieLists } = useContext(MoviesContext)
   return (
     <Modal show={showMovieListsClear} onHide={handleCloseMovieListsClear}>
       <Modal.Header closeButton>
@@ -29,6 +31,9 @@ export default function ClearMovieListModal({
             )
             movieLists[index].list = []
             setMovieLists([...movieLists])
+            if (currentUser != null) {
+              updateUserDocument(currentUser, favorites, movieLists)
+            }
             handleCloseMovieListsClear()
           }}
         >

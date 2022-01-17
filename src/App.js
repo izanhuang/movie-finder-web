@@ -68,43 +68,13 @@ function App() {
       'Found ' + totalResultsNum + ' results found for ' + movieTitle,
     )
 
-  const currentUser = useAuth()
+  const { currentUser } = useAuth()
 
-  // useEffect(() => {
-  //   // if (currentUser == undefined) {
-  //   //   loadMovieListDemo(setFavorites, setMovieLists)
-  //   // }
-  //   if (currentUser != undefined) {
-  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   console.log('Load on login on not null: ', currentUser)
-  //   if (currentUser != undefined) {
-  //     return loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [currentUser])
-
-  // const handleEdit = async () => {
-  //   if (currentUser) {
-  //     const docRef = doc(db, 'UserMovieLists', currentUser.uid)
-  //     const payload = { favorites, movieLists }
-  //     await setDoc(docRef, payload)
-  //   }
-  // }
-
-  // const handleAddDemo = async () => {
-  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
-  //   const payload = { favorites, movieLists }
-  //   await setDoc(docRef, payload)
-  //   console.log('Added Demo')
-  // }
-
-  // const handleLogOutReset = async () => {
-  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
-  //   await getDoc(docRef)
-  // }
+  useEffect(() => {
+    if (currentUser && currentUser != null) {
+      loadUserDocument(currentUser, setFavorites, setMovieLists)
+    }
+  }, [])
 
   return (
     <Router>
@@ -129,59 +99,59 @@ function App() {
           setCurrentMovie,
         }}
       >
-        <AuthProvider>
-          <div className="App">
-            <MyNavbar />
-            <Switch>
-              <Route exact path="/">
-                <Search />
-              </Route>
-              <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">
-                <FullPlot />
-              </Route>
-              <Route exact path="/favorites">
-                <Favorites />
-              </Route>
-              <Route exact path="/signup">
-                <Container
-                  className="d-flex align-items-center justify-content-center text-align"
-                  style={{ minHieght: '100vh' }}
-                >
-                  <Signup />
-                </Container>
-              </Route>
-              <Route exact path="/login">
-                <Container
-                  className="d-flex align-items-center justify-content-center text-align"
-                  style={{ minHieght: '100vh' }}
-                >
-                  <Login />
-                </Container>
-              </Route>
-              <Route exact path="/forgot-password">
-                <Container
-                  className="d-flex align-items-center justify-content-center text-align"
-                  style={{ minHieght: '100vh' }}
-                >
-                  <ForgotPassword />
-                </Container>
-              </Route>
-              <PrivateRoute
-                exact
-                path="/dashboard"
-                component={Dashboard}
-              ></PrivateRoute>
-              <PrivateRoute
-                exact
-                path="/update-profile"
-                component={UpdateProfile}
-              ></PrivateRoute>
-              <Route>
-                <NotFound />
-              </Route>
-            </Switch>
-          </div>
-        </AuthProvider>
+        {/* <AuthProvider> */}
+        <div className="App">
+          <MyNavbar />
+          <Switch>
+            <Route exact path="/">
+              <Search />
+            </Route>
+            <Route exact path="/fullplot/:fullPlotType/:fullPlotTitle">
+              <FullPlot />
+            </Route>
+            <Route exact path="/favorites">
+              <Favorites />
+            </Route>
+            <Route exact path="/signup">
+              <Container
+                className="d-flex align-items-center justify-content-center text-align"
+                style={{ minHieght: '100vh' }}
+              >
+                <Signup />
+              </Container>
+            </Route>
+            <Route exact path="/login">
+              <Container
+                className="d-flex align-items-center justify-content-center text-align"
+                style={{ minHieght: '100vh' }}
+              >
+                <Login />
+              </Container>
+            </Route>
+            <Route exact path="/forgot-password">
+              <Container
+                className="d-flex align-items-center justify-content-center text-align"
+                style={{ minHieght: '100vh' }}
+              >
+                <ForgotPassword />
+              </Container>
+            </Route>
+            <PrivateRoute
+              exact
+              path="/dashboard"
+              component={Dashboard}
+            ></PrivateRoute>
+            <PrivateRoute
+              exact
+              path="/update-profile"
+              component={UpdateProfile}
+            ></PrivateRoute>
+            <Route>
+              <NotFound />
+            </Route>
+          </Switch>
+        </div>
+        {/* </AuthProvider> */}
       </MoviesContext.Provider>
     </Router>
   )

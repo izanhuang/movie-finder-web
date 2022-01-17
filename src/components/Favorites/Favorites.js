@@ -28,6 +28,7 @@ import EditMovieListNameModal from '../Modals/EditMovieListNameModal'
 import ClearFavoritesModal from '../Modals/ClearFavoritesModal'
 import FavoriteMovie from '../FavoriteMovie'
 import CustomOverlayTrigger from '../CustomOverlayTrigger'
+import { Link } from 'react-router-dom'
 
 export const Favorites = () => {
   const { currentUser } = useAuth()
@@ -97,19 +98,6 @@ export const Favorites = () => {
 
   useEffect(() => {}, [name])
 
-  useEffect(() => {
-    if (currentUser && currentUser != null) {
-      loadUserDocument(currentUser, setFavorites, setMovieLists)
-    }
-  }, [])
-
-  // const handleAddDemo = async () => {
-  //   const docRef = doc(db, 'UserMovieLists', 'Demo')
-  //   const payload = { favorites, movieLists }
-  //   await setDoc(docRef, payload)
-  //   console.log('Added Demo')
-  // }
-
   return (
     <div className="container favorites-container">
       <h1 className="display-4 display-margin">Favorites</h1>
@@ -124,8 +112,8 @@ export const Favorites = () => {
 
       {currentUser == null && (
         <Alert variant="info" className="align-left">
-          <Alert.Link href="/signup">Create an account</Alert.Link> to save your
-          favorites and movie list(s).
+          <Link to="/signup">Create an account</Link> to save your favorites and
+          movie list(s).
         </Alert>
       )}
 
@@ -191,6 +179,13 @@ export const Favorites = () => {
                             (fav) => fav.imdbID !== favorite.imdbID,
                           )
                           setFavorites(deletedFromFavorites)
+                          if (currentUser != null) {
+                            updateUserDocument(
+                              currentUser,
+                              deletedFromFavorites,
+                              movieLists,
+                            )
+                          }
                         }}
                       />
                     </div>
@@ -220,6 +215,7 @@ export const Favorites = () => {
                 <ClearFavoritesModal
                   showFavoritesClear={showFavoritesClear}
                   handleCloseFavoritesClear={handleCloseFavoritesClear}
+                  currentUser={currentUser}
                 />
               </div>
             </Accordion.Body>
@@ -284,6 +280,8 @@ export const Favorites = () => {
                             movie,
                             movieLists,
                             setMovieLists,
+                            currentUser,
+                            favorites,
                           )
                         }}
                       />
@@ -337,12 +335,14 @@ export const Favorites = () => {
                     showMovieListsClear={showMovieListsClear}
                     handleCloseMovieListsClear={handleCloseMovieListsClear}
                     currentMovieListName={currentMovieListName}
+                    currentUser={currentUser}
                   />
 
                   <DeleteMovieListModal
                     showMovieListsDelete={showMovieListsDelete}
                     handleCloseMovieListsDelete={handleCloseMovieListsDelete}
                     currentMovieListName={currentMovieListName}
+                    currentUser={currentUser}
                   />
 
                   <EditMovieListNameModal
@@ -353,6 +353,7 @@ export const Favorites = () => {
                     setEditCurrentMovieListName={setEditCurrentMovieListName}
                     movielist={movielist}
                     currentMovieListName={currentMovieListName}
+                    currentUser={currentUser}
                   />
                 </div>
               </Accordion.Body>

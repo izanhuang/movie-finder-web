@@ -96,7 +96,7 @@ export const Signup = () => {
             }
           >
             <FaGoogle className="google-icon" />
-            Sign in with Google
+            Sign up with Google
           </Button>
         </Card.Body>
       </Card>

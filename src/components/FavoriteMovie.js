@@ -9,8 +9,6 @@ export default function FavoriteMovie({ componentName, movie, currentUser }) {
     MoviesContext,
   )
 
-  useEffect(() => {}, [favorites, currentUser])
-
   return (
     <div>
       <AiOutlineStar

@@ -8,11 +8,16 @@ import Container from 'react-bootstrap/Container'
 import loadMovieListDemo from '../utils/loadMovieListDemo'
 import { MoviesContext } from '../contexts/movies-context'
 import loadUserDocument from '../utils/loadUserDocument'
+import db from '../firebase'
+import { onSnapshot, collection } from 'firebase/firestore'
+import updateUserDocument from '../utils/updateUserDocument'
 
 export default function Dashboard() {
   const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
-  const { setMovieLists, setFavorites } = useContext(MoviesContext)
+  const { setMovieLists, setFavorites, favorites, movieLists } = useContext(
+    MoviesContext,
+  )
   const history = useHistory()
 
   async function handleLogout() {
@@ -28,10 +33,27 @@ export default function Dashboard() {
   }
 
   // useEffect(() => {
-  //   if (currentUser != null) {
-  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [])
+
+  // }, [input])
+
+  useEffect(() => {
+    console.log('Load on login on not null: ', currentUser)
+    if (currentUser != null) {
+      onSnapshot(collection(db, 'UserMovieLists'), (snapshot) => {
+        console.log(currentUser.uid)
+        const accountInDB = snapshot.docs
+          .map((doc) => ({ ...doc.data(), id: doc.id }))
+          .some((doc) => doc.id == currentUser.uid)
+
+        console.log(accountInDB)
+        if (accountInDB == false) {
+          updateUserDocument(currentUser, favorites, movieLists)
+        } else {
+          loadUserDocument(currentUser, setFavorites, setMovieLists)
+        }
+      })
+    }
+  }, [currentUser])
 
   return (
     <Container

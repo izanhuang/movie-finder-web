@@ -22,7 +22,6 @@ export function createNewMovieListWithNameAndMovie(
 ) {
   movieLists[movieLists.length] = { name: name, list: [movie] }
   setMovieLists([...movieLists])
-  console.log('MOVIELISTUTILS: ', currentUser)
   if (currentUser != null) {
     updateUserDocument(currentUser, favorites, movieLists)
   }
@@ -58,12 +57,17 @@ export function removeFromMovieList(
   movieParam,
   movieLists,
   setMovieLists,
+  currentUser,
+  favorites,
 ) {
   const index = movieLists.findIndex((list) => list == movielist)
   const newMovieList = movieLists[index].list.filter(
     (movie) => movie.imdbID !== movieParam.imdbID,
   )
   movieLists[index].list = newMovieList
-  notifyRemovedMovie(movieParam.Title, movielist.name)
   setMovieLists([...movieLists])
+  if (currentUser != null) {
+    updateUserDocument(currentUser, favorites, movieLists)
+  }
+  notifyRemovedMovie(movieParam.Title, movielist.name)
 }

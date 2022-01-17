@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { MoviesContext } from '../../contexts/movies-context'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import updateUserDocument from '../../utils/updateUserDocument'
 
 export default function EditMovieListNameModal({
   showEditMovieLists,
@@ -11,8 +12,9 @@ export default function EditMovieListNameModal({
   setEditCurrentMovieListName,
   movielist,
   currentMovieListName,
+  currentUser,
 }) {
-  const { movieLists, setMovieLists } = useContext(MoviesContext)
+  const { movieLists, setMovieLists, favorites } = useContext(MoviesContext)
   return (
     <Modal show={showEditMovieLists} onHide={handleCloseEditMovieLists}>
       <Modal.Header closeButton>
@@ -30,6 +32,9 @@ export default function EditMovieListNameModal({
               )
               movieLists[index].name = editCurrentMovieListName
               setMovieLists([...movieLists])
+              if (currentUser != null) {
+                updateUserDocument(currentUser, favorites, movieLists)
+              }
               handleCloseEditMovieLists()
             }
           }}

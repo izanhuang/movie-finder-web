@@ -2,12 +2,14 @@ import React, { useContext } from 'react'
 import { MoviesContext } from '../../contexts/movies-context'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
+import updateUserDocument from '../../utils/updateUserDocument'
 
 export default function ClearFavoritesModal({
   showFavoritesClear,
   handleCloseFavoritesClear,
+  currentUser,
 }) {
-  const { setFavorites } = useContext(MoviesContext)
+  const { setFavorites, movieLists } = useContext(MoviesContext)
   return (
     <Modal show={showFavoritesClear} onHide={handleCloseFavoritesClear}>
       <Modal.Header closeButton>
@@ -24,6 +26,9 @@ export default function ClearFavoritesModal({
           variant="primary"
           onClick={() => {
             setFavorites([])
+            if (currentUser != null) {
+              updateUserDocument(currentUser, [], movieLists)
+            }
             handleCloseFavoritesClear()
           }}
         >
