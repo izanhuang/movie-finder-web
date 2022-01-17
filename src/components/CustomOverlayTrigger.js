@@ -42,8 +42,9 @@ export default function CustomOverlayTrigger({
               New movie list
             </Button>
           </Popover.Body>
-          {movieLists.map((movielist) => (
+          {movieLists.map((movielist, index) => (
             <Popover.Body
+              key={index}
               onClick={() => {
                 setName(movielist.name)
                 addToMovieList(

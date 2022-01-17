@@ -107,9 +107,7 @@ export const FullPlot = () => {
             <p className="movie-div">{fullPlot.Plot}</p>
 
             <div>Genre: </div>
-            <p className="movie-div" className="movie-div">
-              {fullPlot.Genre}
-            </p>
+            <p className="movie-div">{fullPlot.Genre}</p>
 
             <div>Language: </div>
             <p className="movie-div">{fullPlot.Language}</p>

@@ -47,21 +47,6 @@ export default function UpdateProfile() {
       .finally(() => {
         mounted.current && setLoading(false)
       })
-    // try {
-    //   setError('')
-    //   setLoading(true)
-    //   if (emailRef.current.value !== currentUser.email) {
-    //     await updateEmail(emailRef.current.value)
-    //   }
-    //   if (passwordRef.current.value) {
-    //     await updatePassword(passwordRef.current.value)
-    //   }
-    //   history.push('/login')
-    // } catch (error) {
-    //   console.log(error)
-    //   setError('Failed to update account')
-    // }
-    // setLoading(false)
   }
 
   return (

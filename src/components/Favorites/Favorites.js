@@ -152,8 +152,11 @@ export const Favorites = () => {
           ) : (
             <Accordion.Body>
               <div className="favorites-mapping-container">
-                {favorites.map((favorite) => (
-                  <Card className="favorite-card col-6 col-xs-6 col-sm-5">
+                {favorites.map((favorite, index) => (
+                  <Card
+                    key={index}
+                    className="favorite-card col-6 col-xs-6 col-sm-5"
+                  >
                     <Card.Img
                       src={favorite.Poster}
                       onClick={() => {
@@ -258,8 +261,11 @@ export const Favorites = () => {
             ) : (
               <Accordion.Body>
                 <div className="favorites-mapping-container">
-                  {movielist.list.map((movie) => (
-                    <Card className="favorite-card col-6 col-xs-6 col-sm-5">
+                  {movielist.list.map((movie, index) => (
+                    <Card
+                      key={index}
+                      className="favorite-card col-6 col-xs-6 col-sm-5"
+                    >
                       <Card.Img
                         src={movie.Poster}
                         onClick={() => {

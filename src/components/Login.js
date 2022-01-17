@@ -38,64 +38,62 @@ export default function Login() {
     mounted.current && setLoading(false)
   }
 
-  // useEffect(() => {
-  //   console.log('Load on login on not null: ', currentUser)
-  //   if (currentUser != null) {
-  //     loadUserDocument(currentUser, setFavorites, setMovieLists)
-  //   }
-  // }, [currentUser])
-
   return (
-    <div className="w-100" style={{ maxWidth: '400px' }}>
-      <h1 className="display-4 display-margin">Log In</h1>
-      <Card>
-        <Card.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
+    <Container
+      className="d-flex align-items-center justify-content-center text-align"
+      style={{ minHieght: '100vh' }}
+    >
+      <div className="w-100" style={{ maxWidth: '400px' }}>
+        <h1 className="display-4 display-margin">Log In</h1>
+        <Card>
+          <Card.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={emailRef} required />
+              </Form.Group>
 
-            <Form.Group className="mb-3" id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
+              <Form.Group className="mb-3" id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" ref={passwordRef} required />
+              </Form.Group>
 
+              <Button
+                disabled={loading}
+                className="w-100"
+                variant="primary"
+                type="submit"
+              >
+                Log In
+              </Button>
+            </Form>
+            <div className="w-100  mt-2 no-underline">
+              <Link to="/forgot-password" className="text-muted muted-link">
+                Forgot Password?
+              </Link>
+            </div>
+            <div className="w-100 text-center mt-2 strike">
+              <span>OR</span>
+            </div>
             <Button
-              disabled={loading}
-              className="w-100"
-              variant="primary"
-              type="submit"
+              variant="outline-danger"
+              className="w-100 mt-3 mb-2"
+              onClick={() =>
+                signInWithGoogle()
+                  .then(() => history.push('/dashboard'))
+                  .catch((e) => console.log(e.message))
+              }
             >
-              Log In
+              <FaGoogle className="google-icon" />
+              Sign in with Google
             </Button>
-          </Form>
-          <div className="w-100  mt-2 no-underline">
-            <Link to="/forgot-password" className="text-muted muted-link">
-              Forgot Password?
-            </Link>
-          </div>
-          <div className="w-100 text-center mt-2 strike">
-            <span>OR</span>
-          </div>
-          <Button
-            variant="outline-danger"
-            className="w-100 mt-3 mb-2"
-            onClick={() =>
-              signInWithGoogle()
-                .then(() => history.push('/dashboard'))
-                .catch((e) => console.log(e.message))
-            }
-          >
-            <FaGoogle className="google-icon" />
-            Sign in with Google
-          </Button>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2 no-underline">
-        Need an account? <Link to="/signup"> Sign Up</Link>
+          </Card.Body>
+        </Card>
+        <div className="w-100 text-center mt-2 no-underline">
+          Need an account? <Link to="/signup"> Sign Up</Link>
+        </div>
       </div>
-    </div>
+    </Container>
   )
 }

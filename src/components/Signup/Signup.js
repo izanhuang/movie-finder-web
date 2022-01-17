@@ -1,17 +1,16 @@
-import React, { useRef, useState, useContext, useEffect } from 'react'
-import './Signup.css'
-import Form from 'react-bootstrap/Form'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import Alert from 'react-bootstrap/Alert'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import Alert from 'react-bootstrap/Alert'
 import Container from 'react-bootstrap/Container'
-import { useAuth } from '../../contexts/AuthContext'
-import { Link, useHistory } from 'react-router-dom'
-import useMounted from '../../hooks/useMounted.js'
+import Form from 'react-bootstrap/Form'
 import { FaGoogle } from 'react-icons/fa'
-import updateUserDocument from '../../utils/updateUserDocument'
+import { Link, useHistory } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 import { MoviesContext } from '../../contexts/movies-context'
-import loadUserDocument from '../../utils/loadUserDocument'
+import useMounted from '../../hooks/useMounted.js'
+import updateUserDocument from '../../utils/updateUserDocument'
+import './Signup.css'
 
 export const Signup = () => {
   const emailRef = useRef()
@@ -46,63 +45,72 @@ export const Signup = () => {
   }
 
   useEffect(() => {
-    console.log('Add document on not null: ', currentUser)
+    // console.log('Add document on not null: ', currentUser)
     if (currentUser != null) {
       updateUserDocument(currentUser, favorites, movieLists)
     }
   }, [currentUser])
 
   return (
-    <div className="w-100" style={{ maxWidth: '400px' }}>
-      <h1 className="display-4 display-margin">Sign Up</h1>
-      <Card>
-        <Card.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
+    <Container
+      className="d-flex align-items-center justify-content-center text-align"
+      style={{ minHieght: '100vh' }}
+    >
+      <div className="w-100" style={{ maxWidth: '400px' }}>
+        <h1 className="display-4 display-margin">Sign Up</h1>
+        <Card>
+          <Card.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-3" id="email">
+                <Form.Label>Email</Form.Label>
+                <Form.Control type="email" ref={emailRef} required />
+              </Form.Group>
 
-            <Form.Group className="mb-3" id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
-            </Form.Group>
+              <Form.Group className="mb-3" id="password">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" ref={passwordRef} required />
+              </Form.Group>
 
-            <Form.Group className="mb-3" id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={passwordConfirmRef} required />
-            </Form.Group>
+              <Form.Group className="mb-3" id="password-confirm">
+                <Form.Label>Password Confirmation</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={passwordConfirmRef}
+                  required
+                />
+              </Form.Group>
 
+              <Button
+                disabled={loading}
+                className="w-100  mb-2"
+                variant="primary"
+                type="submit"
+              >
+                Sign Up
+              </Button>
+            </Form>
+            <div className="w-100 text-center mt-2 strike">
+              <span>OR</span>
+            </div>
             <Button
-              disabled={loading}
-              className="w-100  mb-2"
-              variant="primary"
-              type="submit"
+              variant="outline-danger"
+              className="w-100 mt-3 mb-2"
+              onClick={() =>
+                signInWithGoogle()
+                  .then(() => history.push('/dashboard'))
+                  .catch((e) => console.log(e.message))
+              }
             >
-              Sign Up
+              <FaGoogle className="google-icon" />
+              Sign up with Google
             </Button>
-          </Form>
-          <div className="w-100 text-center mt-2 strike">
-            <span>OR</span>
-          </div>
-          <Button
-            variant="outline-danger"
-            className="w-100 mt-3 mb-2"
-            onClick={() =>
-              signInWithGoogle()
-                .then(() => history.push('/dashboard'))
-                .catch((e) => console.log(e.message))
-            }
-          >
-            <FaGoogle className="google-icon" />
-            Sign up with Google
-          </Button>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-2 no-underline">
-        Already have an account? <Link to="/login">Login</Link>
+          </Card.Body>
+        </Card>
+        <div className="w-100 text-center mt-2 no-underline">
+          Already have an account? <Link to="/login">Login</Link>
+        </div>
       </div>
-    </div>
+    </Container>
   )
 }

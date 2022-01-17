@@ -28,9 +28,8 @@ export default function AddMovieModal({
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => {
-            console.log(e.key)
             if (e.key == 'Enter' && name !== '') {
-              console.log(currentMovie)
+              // console.log(currentMovie)
               createNewMovieListWithNameAndMovie(
                 name,
                 currentMovie,

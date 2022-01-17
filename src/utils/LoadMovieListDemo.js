@@ -1,4 +1,3 @@
-import React from 'react'
 import db from '../firebase'
 import { onSnapshot, collection } from 'firebase/firestore'
 

@@ -84,7 +84,7 @@ export const Search = () => {
   }
 
   useEffect(() => {
-    console.log('Current page: ', page)
+    // console.log('Current page: ', page)
     retrieveMovies()
     const checkNextPage = page + 1
     axios
@@ -103,7 +103,7 @@ export const Search = () => {
   useEffect(() => {}, [favorites])
 
   useEffect(() => {
-    console.log('Movies: ', movies)
+    // console.log('Movies: ', movies)
   }, [movies])
 
   useEffect(() => {}, [movieLists])

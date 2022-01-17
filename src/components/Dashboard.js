@@ -32,20 +32,16 @@ export default function Dashboard() {
     }
   }
 
-  // useEffect(() => {
-
-  // }, [input])
-
   useEffect(() => {
-    console.log('Load on login on not null: ', currentUser)
+    // console.log('Load on login on not null: ', currentUser)
     if (currentUser != null) {
       onSnapshot(collection(db, 'UserMovieLists'), (snapshot) => {
-        console.log(currentUser.uid)
+        // console.log(currentUser.uid)
         const accountInDB = snapshot.docs
           .map((doc) => ({ ...doc.data(), id: doc.id }))
           .some((doc) => doc.id == currentUser.uid)
 
-        console.log(accountInDB)
+        // console.log(accountInDB)
         if (accountInDB == false) {
           updateUserDocument(currentUser, favorites, movieLists)
         } else {

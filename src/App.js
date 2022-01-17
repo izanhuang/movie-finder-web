@@ -1,36 +1,22 @@
-import logo from './logo.svg'
-import './App.css'
-import { Search } from './components/Search/Search'
-import React, { useState, useEffect } from 'react'
-import Home from './components/Home/Home'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
-import { MoviesContext } from './contexts/movies-context'
-import {
-  Navbar,
-  Container,
-  Nav,
-  Form,
-  Button,
-  FormControl,
-} from 'react-bootstrap'
-import { FullPlot } from './components/FullPlot/FullPlot'
-import { Favorites } from './components/Favorites/Favorites'
-import { Signup } from './components/Signup/Signup'
-import { NotFound } from './components/NotFound'
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { AuthProvider } from './contexts/AuthContext'
-import Login from './components/Login'
+import './App.css'
 import Dashboard from './components/Dashboard'
-import PrivateRoute from './components/PrivateRoute'
+import { Favorites } from './components/Favorites/Favorites'
 import ForgotPassword from './components/ForgotPassword'
-import UpdateProfile from './components/UpdateProfile'
+import { FullPlot } from './components/FullPlot/FullPlot'
+import Login from './components/Login'
 import MyNavbar from './components/MyNavbar'
-import { EmptyMovieListDemo, MovieListDemo } from './utils/MovieListDemo'
+import { NotFound } from './components/NotFound'
+import PrivateRoute from './components/PrivateRoute'
+import { Search } from './components/Search/Search'
+import { Signup } from './components/Signup/Signup'
+import UpdateProfile from './components/UpdateProfile'
 import { useAuth } from './contexts/AuthContext'
-import db from './firebase'
-import { onSnapshot, collection, setDoc, getDoc, doc } from 'firebase/firestore'
-import loadMovieListDemo from './utils/loadMovieListDemo'
+import { MoviesContext } from './contexts/movies-context'
 import loadUserDocument from './utils/loadUserDocument'
 
 function App() {
@@ -99,7 +85,6 @@ function App() {
           setCurrentMovie,
         }}
       >
-        {/* <AuthProvider> */}
         <div className="App">
           <MyNavbar />
           <Switch>
@@ -113,28 +98,13 @@ function App() {
               <Favorites />
             </Route>
             <Route exact path="/signup">
-              <Container
-                className="d-flex align-items-center justify-content-center text-align"
-                style={{ minHieght: '100vh' }}
-              >
-                <Signup />
-              </Container>
+              {currentUser != null ? <Redirect to="/dashboard" /> : <Signup />}
             </Route>
             <Route exact path="/login">
-              <Container
-                className="d-flex align-items-center justify-content-center text-align"
-                style={{ minHieght: '100vh' }}
-              >
-                <Login />
-              </Container>
+              {currentUser != null ? <Redirect to="/dashboard" /> : <Login />}
             </Route>
             <Route exact path="/forgot-password">
-              <Container
-                className="d-flex align-items-center justify-content-center text-align"
-                style={{ minHieght: '100vh' }}
-              >
-                <ForgotPassword />
-              </Container>
+              <ForgotPassword />
             </Route>
             <PrivateRoute
               exact
@@ -151,7 +121,6 @@ function App() {
             </Route>
           </Switch>
         </div>
-        {/* </AuthProvider> */}
       </MoviesContext.Provider>
     </Router>
   )
