@@ -139,8 +139,8 @@ export const Favorites = () => {
                 <Alert.Heading>Hey, nice to see you</Alert.Heading>
                 <hr />
                 <p className="mb-0">
-                  ⭐ <Alert.Link href="/">Star</Alert.Link> movies to add them
-                  to your favorites!
+                  ⭐ <Link to="/">Star</Link> movies to add them to your
+                  favorites!
                 </p>
               </Alert>
             </Accordion.Body>
@@ -253,8 +253,7 @@ export const Favorites = () => {
               <Accordion.Body>
                 <Alert variant="light" className="align-left">
                   <p className="mb-0">
-                    ➕ <Alert.Link href="/">Add</Alert.Link> movies to this
-                    list!
+                    ➕ <Link to="/">Add</Link> movies to this list!
                   </p>
                 </Alert>
               </Accordion.Body>
