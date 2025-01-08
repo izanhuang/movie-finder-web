@@ -1,6 +1,6 @@
 # Movie Finder
 
-[Movie Finder](https://izanhuang.github.io/movie-finder-web/#/) built with React, OMDb API, and Firebase.
+Search, star favorites, and add movies to lists.
 
 ## 📚 Core Packages
 
